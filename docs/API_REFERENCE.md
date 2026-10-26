@@ -1,51 +1,50 @@
-# API reference
+# API reference — CivicShield AI (research demo)
 
-Local interactive Swagger: http://localhost:8000/docs
+Swagger at http://localhost:8000/docs . All endpoints are for demonstration, **not emergency warnings or dispatch**.
 
-Base: \`http://localhost:8000\`
+| Method | Endpoint | Protection / data |
+| --- | --- | --- |
+| GET | \`/api/health\` | Public liveness, no safety guarantee |
+| GET | \`/api/v1/sources\` | Government source bookmarks only |
+| GET | \`/api/v1/alerts\` | Official feed intentionally disconnected |
+| GET | \`/api/v1/weather/sample\` | Synthetic example |
+| GET | \`/api/v1/weather/live?latitude=17.38&longitude=78.48\` | Third-party modeled data; \`OPEN_METEO_ENABLED=true\`; per-process limited |
+| POST | \`/api/v1/risk/estimate\` | Experimental user-input indicator |
+| POST | \`/api/v1/assistant/ask\` | Curated five-language general guidance |
+| GET | \`/api/v1/assistant/knowledge?q=flood\` | Source-linked curated English summaries |
+| POST | \`/api/v1/incidents\` | Disabled by default; optional \`X-Reporter-Key\` |
+| GET | \`/api/v1/incidents/review\` | \`X-Responder-Key\`; latest 100 reports |
+| PATCH | \`/api/v1/incidents/{id}/review\` | \`X-Responder-Key\`; statuses verified/dismissed/needs_info |
+| GET | \`/api/v1/incidents/audit\` | \`X-Responder-Key\`; latest 100 local review events |
+| GET | \`/api/v1/incidents/nearby?latitude=17.38&longitude=78.48&radius_km=10\` | \`X-Responder-Key\`; limited unverified geo scan |
+| GET | \`/api/v1/ops/status\` | \`X-Responder-Key\`; safe operational summary |
+| GET | \`/api/v1/analytics/summary\` | Counts of local reports only |
+| GET | \`/api/v1/analytics/trends\` | Local report counts over the past seven days |
 
-| Method | Route | Access | Description |
-| --- | --- | --- | --- |
-| GET | \`/api/health\` | Public | Demo status and UTC timestamp |
-| GET | \`/api/v1/sources\` | Public | Reference catalog, integration state |
-| GET | \`/api/v1/alerts\` | Public | Empty/not-connected official feed (not a safety statement) |
-| GET | \`/api/v1/weather/sample\` | Public | Synthetic example observations |
-| POST | \`/api/v1/risk/estimate\` | Public | Experimental rainfall-based indicator |
-| POST | \`/api/v1/assistant/ask\` | Public | Curated multilingual preparedness advice |
-| POST | \`/api/v1/incidents\` | Operator-enabled | Submit a sanitized non-emergency report |
-| GET | \`/api/v1/incidents/review\` | Reviewer API key | Latest 100 reports incl. restricted content |
-| PATCH | \`/api/v1/incidents/{id}/review\` | Reviewer API key | Human decision |
-| GET | \`/api/v1/analytics/summary\` | Public | Aggregate counts |
-| GET | \`/api/v1/analytics/trends\` | Public | Synthetic demonstration series |
-
-## Prediction request
+## Sample risk input
 
 ~~~json
 {"city":"Hyderabad","rainfall_24h_mm":68,"temperature_c":29,"humidity_pct":85,"forecast_age_hours":1}
 ~~~
 
-- \`forecast_age_hours>6\`: risk level \`unavailable\`, \`data_stale=true\`.
-- No model configured: \`model_mode=demonstration_heuristic\`; rainfall illustrative thresholds; NOT flood predictions.
-- Trusted local joblib configured: \`model_mode=user_trained_experimental\` and uncalibrated \`model_score\`; beware pickle trust.
-- \`is_official_warning\` is always false.
+Mode \`demonstration_heuristic\` returns an illustrative grouping only. Stale age >6 h becomes \`risk_level=unavailable\`. A user-trained model can return **uncalibrated** \`model_score\` if a trusted artifact is explicitly configured. All risk responses set \`is_official_warning=false\`.
 
 ## Incident submission
 
 ~~~json
-{"title":"Tree blocking street","description":"A large fallen tree is blocking the road","city":"Hyderabad","language":"en"}
+{"title":"Fallen tree on public road","description":"A large fallen tree blocks the road near the park.","city":"Hyderabad","language":"en","latitude":17.38,"longitude":78.48}
 ~~~
 
-Submissions default to disabled (HTTP 503), and should **not** be enabled on a public site without authentication, rate limiting, moderation and a privacy review.
+Optional coordinates must be supplied together and are disclosed only to authorized reviewers, not the public analytics feed. A reporter access key is strongly recommended even on controlled local environments. A status of \`verified\` means *demo reviewer marked verified*, not the government or emergency services.
 
-## Reviewer authentication
+## Source-linked retrieval
 
-Send \`X-Responder-Key: <your locally configured RESPONDER_API_KEY>\`.
-This is demo auth only; requires HTTPS, RBAC/OIDC and operational policy before deployment. Never put reviewer keys in repository or browser bundles.
-
-## Assistant request
-
-~~~json
-{"question":"What should I do during a flood?","language":"te"}
+~~~text
+GET /api/v1/assistant/knowledge?q=flood
 ~~~
 
-Supported \`language\`: en, te, hi, ta, kn. Uses **curated/static** summaries with source bookmarks, not live official guidance.
+Responses contain document summary \`body\`, \`source_title\`, \`source_url\`, \`curated_date\`, \`translation_verified=false\` and \`live_retrieval=false\` metadata. They are **not** current validated official advisories.
+
+## Headers and quotas
+
+Demo intake: \`X-Reporter-Key\` if configured. Restricted endpoints: \`X-Responder-Key\`. Single process only; rate limits can be bypassed across multiple replicas. Do not expose API publicly without a full security review.

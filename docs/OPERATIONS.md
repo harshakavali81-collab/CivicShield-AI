@@ -1,52 +1,57 @@
-# Operators: local monitoring, provenance and privacy
+# Operator runbook: local demonstration only
 
-This is a local-only educational demonstration. **Do not expose it as an emergency dispatch or warning service.**
+## Live modeled weather (Open-Meteo, not IMD)
 
-## Modeled real-world weather, not alerts
+The opt-in endpoint \`GET /api/v1/weather/live?latitude=17.38&longitude=78.48\` is disabled by default. Enable with \`OPEN_METEO_ENABLED=true\` in the shell or Docker \`.env\`.
 
-- \`GET /api/v1/weather/live?latitude=17.38&longitude=78.48\` calls Open-Meteo only when \`OPEN_METEO_ENABLED=true\`.
-- Requests round latitude/longitude to two decimal places before sending to Open-Meteo.
-- Up to 24 hours of *modeled* hourly precipitation is accumulated if >=20 periods are available. It is **not station-observed rainfall**.
-- Data is cached 10 minutes and explicitly marked third-party modeled weather, timestamped and attributed. Failure produces HTTP 503, never invented substitute data.
-- Free API is non-commercial with limits and no SLA; paid or self-hosted operation is required in other circumstances. Visit https://open-meteo.com/en/terms .
-- Weather values must **not** be passed automatically to the flood-risk endpoint as though they were validated ground truth. The risk model remains experimental.
+It obtains temperature, humidity and a sum of available modeled hourly precipitation values over the preceding 24 hours. The provider timestamp and provenance are shown and an upstream outage results in HTTP 503, **not** a fabricated forecast. Longitude/latitude are rounded to two decimals. No more than one external call per 10 minutes is used for the same rounded coordinates within one process.
 
-## Lightweight controls
+Open-Meteo's free service is for noncommercial use with attribution. See https://open-meteo.com/en/terms and https://open-meteo.com/en/docs . This API does **not** carry official government warnings or guarantee safety.
 
-- \`INCIDENT_SUBMISSIONS_ENABLED=false\` by default; enable only in controlled environments.
-- \`REPORTER_API_KEY\` optional demo gate; set it whenever enabling local submissions.
-- \`RESPONDER_API_KEY\` mandatory for review and reviewer audit (demo shared key).
-- Fixed-window in-process limits guard report and knowledge endpoints; **not suitable for multi-instance production**.
-- API security headers reduce exposure but do not implement TLS, secure sessions or real RBAC.
-- \`GET /api/v1/ops/status\` requires responder key; summarizes DB status and configured feeds without disclosing secrets.
-- \`GET /api/v1/incidents/audit\` requires responder key and shows local review audit trail.
+To save individual weather snapshots locally for an operator-managed schedule:
 
-## Privacy retention
+~~~bash
+python -m scripts.collect_weather --latitude 17.38 --longitude 78.48
+~~~
 
-Review and retention deletion are reversible only from a backup. Before running:
+Rows append to gitignored \`data/raw/open_meteo_history.jsonl\`; operator must verify license, avoid personal-location collection and configure the recurring schedule themselves. No task is silently running.
 
-~~~sh
+## Access and protection
+
+- \`INCIDENT_SUBMISSIONS_ENABLED=false\` (default) disables incident intake.
+- \`REPORTER_API_KEY\` is an optional shared demo intake key. Set when enabling controlled demo reporting. UI includes a password field; keys are not stored by the browser component.
+- \`RESPONDER_API_KEY\` is mandatory for review, audit, geospatial report queries and operational status.
+- Per-process rate limit guards: 30 submitted reports / hour, 20 modeled-weather requests / hour, 120 knowledge searches / hour per socket peer. **Not distributed or production-ready.**
+- Security headers: nosniff, no framing, no-referrer, no-store and restricted device permissions.
+- Human status changes are recorded in a local audit table (no verified actor identity).
+- \`GET /api/v1/ops/status\` (reviewer key): database check and configuration flags; never credentials.
+
+## Backup, data quality and retention
+
+~~~bash
+python -m scripts.backup_sqlite --output backups/manual-backup.db
 python -m scripts.purge_incidents --days 30
 python -m scripts.purge_incidents --days 30 --confirm
+python -m scripts.check_data_quality /path/to/your_labeled.csv
 ~~~
 
-This purges aged report entries but does not yet cascade all audit metadata; purge policies and backups need expert review. Rotate keys and avoid real personally identifying details during demo tests.
+Backup writes a consistent copy of the SQLite demo database with restrictive local filesystem permissions. Backups can contain PII; do not upload them publicly. The purge command deletes both old report rows and their linked audit records. PostgreSQL operators must use \`pg_dump\` and establish separate restoration tests, encryption and retention policies.
 
-## Dataset quality
+## Database migrations and geospatial index
 
-~~~sh
-python -m scripts.check_data_quality /path/to/history.csv
-~~~
+\`pip install -e ".[migrations]"\` then **on an empty database only** \`alembic upgrade head\`. API startup already performs \`create_all\` for local convenience; do not blindly run an initial migration on a database with existing tables. For a preexisting database, first reconcile the schema and use \`alembic stamp\` only when the schema actually matches.
 
-Output highlights class balance, invalid timestamps, duplicate timestamps, missing values and provenance limitations.
+An optional PostgreSQL/PostGIS index is in \`backend/migrations/postgis_indexes.sql\`. The reviewer-only \`/api/v1/incidents/nearby\` endpoint currently computes haversine distances for up to 5,000 candidates and returns at most 100, so it is not guaranteed exhaustive.
 
-## Optional interpretability and experiment tracking
+## Optional SHAP and MLflow
 
-~~~sh
+~~~bash
 pip install -e ".[explain,tracking]"
 python -c 'from civicshield.ml.experiment import log_experiment; print(log_experiment("artifacts/models/risk_model.metrics.json"))'
 ~~~
 
-SHAP helper: \`civicshield.ml.explain.explain("/trusted/path/risk_model.joblib", {"rainfall_24h_mm":60,"temperature_c":30,"humidity_pct":75})\`. Only load locally trusted model artifacts.
+The SHAP helper accepts **trusted local joblib** artifacts only. Both tools are optional research utilities; no hosted tracking/registry or drift alerts are deployed.
 
-MLflow and SHAP are **optional** and not a deployed MLOps service. Measured model utility still needs scientific validation.
+## Production blockers
+
+Shared-key review is not real OIDC/RBAC/MFA, in-memory limits do not scale, submissions lack independent moderation, and free-text redaction is incomplete. TLS, rate limiting, secure telemetry, retention policy, offsite encrypted backups, incident response, human-reviewed translations, model validation and source authority governance are still required.

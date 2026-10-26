@@ -1,51 +1,58 @@
-# Local deployment and operational limitations
+# Local demo deployment — NOT approved for public emergency use
 
 ## Prerequisites
 
-- Python 3.11+; Node 20+; or Docker + Docker Compose
-- Git clone of repository
-- Never store real credentials in Git
+Python 3.11+, Node 20+ or Docker/Compose; repository clone.
 
 ## Development
 
-~~~sh
+~~~bash
 python -m venv .venv
-source .venv/bin/activate
-python -m pip install -e ".[dev]"
+# Activate the environment (Windows: .venv\Scripts\activate)
+python -m pip install -e ".[dev,migrations]"
 uvicorn backend.app.main:app --reload
 ~~~
 
-In a separate terminal:
+In another shell:
 
-~~~sh
+~~~bash
 cd frontend
 npm install
 npm run dev
 ~~~
 
-API: http://localhost:8000/docs. UI: http://localhost:5173.
+Dashboard http://localhost:5173 ; Swagger http://localhost:8000/docs .
 
-## Docker demo
+By default the simulated risk endpoint works offline. The separate real third-party modeled weather tab requires setting \`OPEN_METEO_ENABLED=true\` in the environment **before** starting the API.
 
-~~~sh
+## Docker local development
+
+~~~bash
 cp .env.example .env
+# Edit .env to set POSTGRES_PASSWORD to a strong local-only string.
+# Set OPEN_METEO_ENABLED=true if you explicitly want modeled third-party weather.
 docker compose up --build
 ~~~
 
-Docker includes PostgreSQL/PostGIS. The current SQLAlchemy schema stores numeric coordinates but does not yet use PostGIS spatial indexes or geometry types. Docker publishes the UI/API to loopback only.
+Docker publishes the API and UI to \`127.0.0.1\` only. \`.env\` is gitignored. Do not enable report submissions without a privacy review and local access key.
 
-For **local sample reporting**, place \`INCIDENT_SUBMISSIONS_ENABLED=true\` in \`.env\`, and set \`RESPONDER_API_KEY\` to a long random string; restart Compose. If you use Compose's Postgres database, set a different strong \`POSTGRES_PASSWORD\` variable in \`.env\` before database initialization.
+Set \`INCIDENT_SUBMISSIONS_ENABLED=true\`, \`REPORTER_API_KEY\`, and \`RESPONDER_API_KEY\` to exercise the demo intake/review flow. Do not distribute these keys or place them in an HTML bundle.
 
-Do not expose any part of this Compose stack to the public internet: default credentials, missing rate limits, demo auth and privacy-policy gaps make it unsafe.
+## Database maintenance
 
-## Optional trusted ML model
+On a **new, empty** database only: \`alembic upgrade head\` after installing the \`migrations\` optional dependency. Existing databases initialized by API \`create_all\` require careful schema reconciliation before stamping or migration.
 
-~~~sh
-python -m civicshield.ml.train --data /absolute/path/owned_labeled.csv --output artifacts/models/risk_model.joblib
+\`python -m scripts.backup_sqlite\` supports local SQLite only. PostgreSQL requires \`pg_dump\` and tested restore procedures.
+
+## Model training and graphs
+
+~~~bash
+python -m civicshield.ml.train --data /path/to/labeled_history.csv --output artifacts/models/risk_model.joblib
+python scripts/plot_metrics.py artifacts/models/risk_model.metrics.json
 ~~~
 
-Set \`CIVICSHIELD_MODEL_PATH\` for backend local execution. The Compose API image does not include the training artifact by default. Joblib is pickle-based and can execute code on load; only use your own files. Not officially validated.
+The training file must be independently labeled and legally sourced; no genuine hazard model is pre-trained or hosted.
 
-## Production readiness checklist
+## Production blockers
 
-External ingress with TLS; identity/authz/roles; anti-abuse gates; validated live official sources; licensing; high availability; metrics; database migrations; PostGIS spatial implementation; backups/retention; consent; pen test; multilingual quality review; expert-validated hazard models; on-call processes; incident-response plan. These are **not implemented or claimed**.
+Missing public-trust infrastructure: secure identity/roles, rate limiting, moderation, encryption, TLS, official alert verification, actual validated hazard models, geospatial query optimization, safe human operational workflow and 24/7 monitoring. Never advertise this demo as a working emergency-warning service.
