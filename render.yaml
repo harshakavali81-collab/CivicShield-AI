@@ -1,0 +1,47 @@
+# Template only; provision account, OIDC and secrets separately.
+databases:
+  - name: civicshield-db
+    databaseName: civicshield
+    user: civicshield
+    plan: basic
+services:
+  - type: web
+    name: civicshield-api
+    runtime: docker
+    plan: starter
+    dockerfilePath: ./backend/Dockerfile
+    dockerContext: .
+    healthCheckPath: /api/health
+    preDeployCommand: python -m alembic upgrade head
+    envVars:
+      - key: APP_ENV
+        value: production
+      - key: AUTH_MODE
+        value: oidc
+      - key: DATABASE_URL
+        fromDatabase:
+          name: civicshield-db
+          property: connectionString
+      - key: INCIDENT_SUBMISSIONS_ENABLED
+        value: "false"
+      - key: OPEN_METEO_ENABLED
+        value: "false"
+      - key: IMD_API_ENABLED
+        value: "false"
+      - key: OIDC_ISSUER
+        sync: false
+      - key: OIDC_AUDIENCE
+        sync: false
+      - key: OIDC_JWKS_URL
+        sync: false
+      - key: CORS_ORIGINS
+        sync: false
+  - type: web
+    name: civicshield-web
+    runtime: static
+    rootDir: frontend
+    buildCommand: npm install --no-audit --no-fund && npm run build
+    staticPublishPath: ./dist
+    envVars:
+      - key: VITE_API_BASE
+        sync: false
