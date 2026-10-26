@@ -1,13 +1,14 @@
-# CivicShield AI — live repository tree
+# CivicShield AI — current GitHub folder tree
 
-Generated from the actual tracked GitHub tree of the project's `main` branch. It may evolve as commits land.
+Automatically reconstructed from the 102 tracked files currently on main. This is the source-code layout, not certification of operational readiness.
 
-~~~text
+```text
 CivicShield-AI/
 ├── .github/
 │   ├── workflows/
 │   │   ├── ci.yml
-│   │   └── model-validation.yml
+│   │   ├── model-validation.yml
+│   │   └── pages.yml
 │   └── dependabot.yml
 ├── artifacts/
 │   ├── evaluation_reports/
@@ -20,6 +21,7 @@ CivicShield-AI/
 │   │   ├── config.py
 │   │   ├── db.py
 │   │   ├── main.py
+│   │   ├── oidc.py
 │   │   ├── schemas.py
 │   │   └── security.py
 │   ├── migrations/
@@ -44,8 +46,10 @@ CivicShield-AI/
 │   ├── DATA_SOURCES.md
 │   ├── DEMO_SCRIPT.md
 │   ├── DEPLOYMENT.md
+│   ├── IMD_CWC_INTEGRATION.md
 │   ├── MODEL_CARD.md
 │   ├── OPERATIONS.md
+│   ├── PRODUCTION_SETUP.md
 │   ├── PROJECT_TREE.md
 │   ├── PROJECT_WORKFLOW.md
 │   ├── ROADMAP.md
@@ -56,10 +60,12 @@ CivicShield-AI/
 │   ├── src/
 │   │   ├── api.js
 │   │   ├── App.jsx
+│   │   ├── auth.js
 │   │   ├── KnowledgeSearch.jsx
 │   │   ├── LiveWeather.jsx
 │   │   ├── main.jsx
 │   │   ├── MapPanel.jsx
+│   │   ├── OfficialSources.jsx
 │   │   ├── styles-extra.css
 │   │   └── styles.css
 │   ├── .dockerignore
@@ -75,6 +81,8 @@ CivicShield-AI/
 │   ├── collect_weather.py
 │   ├── plot_metrics.py
 │   └── purge_incidents.py
+├── site/
+│   └── index.html
 ├── src/
 │   └── civicshield/
 │       ├── assistant/
@@ -90,6 +98,8 @@ CivicShield-AI/
 │       │   └── triage.py
 │       ├── ingestion/
 │       │   ├── __init__.py
+│       │   ├── cwc_official.py
+│       │   ├── imd_official.py
 │       │   ├── open_meteo.py
 │       │   └── sources.py
 │       ├── ml/
@@ -97,7 +107,8 @@ CivicShield-AI/
 │       │   ├── experiment.py
 │       │   ├── explain.py
 │       │   ├── predict.py
-│       │   └── train.py
+│       │   ├── train.py
+│       │   └── validate_external.py
 │       ├── monitoring/
 │       │   ├── __init__.py
 │       │   ├── drift.py
@@ -107,6 +118,7 @@ CivicShield-AI/
 │   ├── conftest.py
 │   ├── test_api.py
 │   ├── test_guidance.py
+│   ├── test_integrations.py
 │   ├── test_new_features.py
 │   ├── test_operations.py
 │   ├── test_risk.py
@@ -119,29 +131,8 @@ CivicShield-AI/
 ├── LICENSE
 ├── Makefile
 ├── pyproject.toml
-└── README.md
-~~~
+├── README.md
+└── render.yaml
+```
 
-## Component summary
-
-| Directory | Responsibilities |
-| --- | --- |
-| `backend/app` | FastAPI routing, Pydantic, DB entities, security and human review |
-| `backend/migrations` | Initial Alembic schema revision; optional manual PostGIS index |
-| `src/civicshield/ingestion` | Open-Meteo modeled-weather client and official-bookmark catalog |
-| `src/civicshield/ml` | Binary supervised research training, experimental risk scoring and optional SHAP/MLflow |
-| `src/civicshield/assistant` | Curated multilingual preparedness answers and manual-source lexical retrieval |
-| `src/civicshield/incident_management` | Text triage, duplicate fingerprints and distance calculation |
-| `src/civicshield/data_processing` | Shared ML feature schema |
-| `src/civicshield/monitoring` | Source freshness and illustrative drift computation |
-| `frontend` | React/Vite dashboard, Leaflet map, provider weather, incident forms, charts |
-| `tests` | API, ML, safety, provider, operations and migration/backup-related assertions |
-| `scripts` | Dataset auditing, weather collection, local backup/retention and SVG graphs |
-| `data` | Untracked/ignored local observations only |
-| `artifacts` | Untracked/ignored model and evaluation outputs |
-| `docs` | Full project explanation, architecture/sequence diagrams, model card and setup |
-| `.github/workflows` | Backend tests, frontend build and migration smoke checks |
-
-[Architecture](ARCHITECTURE.md) · [Workflow](PROJECT_WORKFLOW.md) · [Visualizations](VISUALIZATIONS.md) · [Operational runbook](OPERATIONS.md) · [Roadmap](ROADMAP.md)
-
-**Reminder:** The complete folder tree does not imply real-world emergency-readiness.
+For explanation see [README](../README.md), [Architecture](ARCHITECTURE.md), [ML evaluation](MODEL_CARD.md), [IMD and CWC](IMD_CWC_INTEGRATION.md), [Production setup](PRODUCTION_SETUP.md), [Roadmap](ROADMAP.md).
