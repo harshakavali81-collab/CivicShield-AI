@@ -2,7 +2,7 @@
 
 **Multilingual Public Safety, Disaster Risk Demonstration & Incident Review Platform**
 
-[Architecture](docs/ARCHITECTURE.md) · [Project tree](docs/PROJECT_TREE.md) · [Workflow](docs/PROJECT_WORKFLOW.md) · [API](docs/API_REFERENCE.md) · [Model card](docs/MODEL_CARD.md) · [Safety and privacy](docs/SAFETY_AND_PRIVACY.md) · [Testing](docs/TEST_PLAN.md) · [Deployment](docs/DEPLOYMENT.md)
+[Architecture](docs/ARCHITECTURE.md) · [Project tree](docs/PROJECT_TREE.md) · [Workflow](docs/PROJECT_WORKFLOW.md) · [API](docs/API_REFERENCE.md) · [Model card](docs/MODEL_CARD.md) · [Safety and privacy](docs/SAFETY_AND_PRIVACY.md) · [Testing](docs/TEST_PLAN.md) · [Visualizations](docs/VISUALIZATIONS.md) · [Deployment](docs/DEPLOYMENT.md)
 
 > **SAFETY NOTICE:** This is a portfolio/research demo, **not** an official warning system, emergency service, evacuation tool, or reliable prediction of disaster safety. Risk indicators are experimental; demo samples are synthetic. Follow official authorities. During emergencies contact local emergency services.
 
@@ -68,6 +68,12 @@ python -m civicshield.ml.train --data /path/to/labeled_history.csv --output arti
 ```
 
 Required CSV headers: `observed_at,rainfall_24h_mm,temperature_c,humidity_pct,risk_label` with binary `risk_label` (0/1). Evaluation uses a chronological holdout; data collection, independent geographic validation and calibration are required before any operational use. Set `CIVICSHIELD_MODEL_PATH` explicitly to load a locally trusted model.
+
+## Visual architecture
+
+![CivicShield AI architecture](docs/assets/architecture.svg)
+
+[Explore system diagrams and experiment graphs](docs/VISUALIZATIONS.md).
 
 ## Project workflow
 
