@@ -6,6 +6,7 @@ import {
 } from 'lucide-react';
 import { Area, AreaChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts';
 import { api } from './api.js';
+import { oidcConfigured, authManager, readOidcUser, loginWithOidc, logoutLocally } from './auth.js';
 import MapPanel from './MapPanel.jsx';
 import LiveWeather from './LiveWeather.jsx';
 import KnowledgeSearch from './KnowledgeSearch.jsx';
@@ -178,33 +179,48 @@ function ReportIncident() {
 }
 function ResponderReview() {
   const [key,setKey] = useState(''),[reports,setReports] = useState([]),[error,setError] = useState(''),[message,setMessage] = useState(''),[busy,setBusy] = useState(false);
+  const [accessToken,setAccessToken] = useState('');
+  useEffect(() => {
+    if (!oidcConfigured) return;
+    readOidcUser().then(user => {
+      if (user?.expired !== true) setAccessToken(user?.access_token || '');
+    }).catch(err => setError('OIDC sign-in failed: ' + err.message));
+  }, []);
+  const requestHeaders = () => oidcConfigured
+    ? (accessToken ? { Authorization: 'Bearer ' + accessToken } : {})
+    : { 'X-Responder-Key': key };
   const [audit,setAudit] = useState([]);
   const [geo,setGeo] = useState({latitude:'17.38',longitude:'78.48',radius_km:10});
   const [geoResults,setGeoResults] = useState(null);
   async function load() {setBusy(true);setError('');setMessage('');
-    try {const data=await api('/api/v1/incidents/review',{headers:{'X-Responder-Key':key}});setReports(data.incidents);}
+    try {const data=await api('/api/v1/incidents/review',{headers:requestHeaders()});setReports(data.incidents);}
     catch(err){setError(err.message);setReports([]);}finally{setBusy(false);}
   }
   async function searchNearby() {setError('');
     try {
       const params = new URLSearchParams(geo);
-      const result=await api('/api/v1/incidents/nearby?'+params,{headers:{'X-Responder-Key':key}});
+      const result=await api('/api/v1/incidents/nearby?'+params,{headers:requestHeaders()});
       setGeoResults(result);
     } catch(err) {setError(err.message);}
   }
   async function loadAudit() {setError('');
-    try {const data=await api('/api/v1/incidents/audit',{headers:{'X-Responder-Key':key}});setAudit(data.events || []);}
+    try {const data=await api('/api/v1/incidents/audit',{headers:requestHeaders()});setAudit(data.events || []);}
     catch(err){setError(err.message);}
   }
   async function review(id,status) {setError('');setMessage('');
-    try {await api('/api/v1/incidents/'+encodeURIComponent(id)+'/review',{method:'PATCH',headers:{'X-Responder-Key':key},body:JSON.stringify({status,reviewer_note:'Reviewed in demonstration dashboard'})});setMessage('Report updated by reviewer.');await load();}
+    try {await api('/api/v1/incidents/'+encodeURIComponent(id)+'/review',{method:'PATCH',headers:requestHeaders(),body:JSON.stringify({status,reviewer_note:'Reviewed in demonstration dashboard'})});setMessage('Report updated by reviewer.');await load();}
     catch(err){setError(err.message);}
   }
   return <>
     <div className="page-heading"><div><div className="eyebrow">AUTHORIZED HUMAN DECISION</div><h1>Responder review queue</h1><p>A protected demonstration queue. Automated suggestions never trigger official action.</p></div></div>
-    <Notice type="warning">This demo uses a single shared API key, not production role-based authentication. Use only locally. Reports may contain sensitive details.</Notice>
+    <Notice type="warning">In demo mode, this uses a local shared key. Hosted reviewer mode requires a real OIDC provider and server-enforced responder role. Reports may contain sensitive details.</Notice>
     <Card title="Reviewer access" subtitle="Enter RESPONDER_API_KEY configured on the API server" icon={LockKeyhole}>
-      <div className="inline-controls"><input aria-label="Responder API key" type="password" autoComplete="off" placeholder="Local responder API key" value={key} onChange={e=>setKey(e.target.value)} /><button className="primary" disabled={busy||!key} onClick={load}>{busy ? 'Loading...' : 'Load queue'} <RefreshCcw size={16}/></button></div>
+      {oidcConfigured ? <div className="inline-controls">
+        {accessToken
+          ? <button className="secondary" type="button" onClick={async()=>{await logoutLocally();setAccessToken('');setReports([])}}>Clear browser session</button>
+          : <button className="primary" type="button" onClick={()=>loginWithOidc().catch(err=>setError(err.message))}>Sign in with organization IDP</button>}
+        <button className="primary" disabled={busy || !accessToken} onClick={load}>{busy ? 'Loading...' : 'Load queue'} <RefreshCcw size={16}/></button>
+      </div> : <div className="inline-controls"><input aria-label="Responder API key" type="password" autoComplete="off" placeholder="Local responder API key" value={key} onChange={e=>setKey(e.target.value)} /><button className="primary" disabled={busy||!key} onClick={load}>{busy ? 'Loading...' : 'Load queue'} <RefreshCcw size={16}/></button></div>}
       {error && <Notice type="warning">{error}</Notice>}
       {message && <Notice type="success">{message}</Notice>}
     </Card>
@@ -222,7 +238,7 @@ function ResponderReview() {
         <label>Latitude<input type="number" min="-90" max="90" step="any" value={geo.latitude} onChange={e=>setGeo({...geo,latitude:e.target.value})}/></label>
         <label>Longitude<input type="number" min="-180" max="180" step="any" value={geo.longitude} onChange={e=>setGeo({...geo,longitude:e.target.value})}/></label>
         <label>Search radius (km)<input type="number" min="0.1" max="50" step="0.1" value={geo.radius_km} onChange={e=>setGeo({...geo,radius_km:e.target.value})}/></label>
-        <div className="actions"><button className="secondary" onClick={searchNearby} disabled={!key}>Find nearby reports</button></div>
+        <div className="actions"><button className="secondary" onClick={searchNearby} disabled={oidcConfigured ? !accessToken : !key}>Find nearby reports</button></div>
       </div>
       {geoResults && <div className="report-list" style={{marginTop:15}}>
         <p className="muted">{geoResults.total_matches_in_scan} matching local reports. Results limited to 100; search is not authoritative or complete.</p>
@@ -232,7 +248,7 @@ function ResponderReview() {
       </div>}
     </Card>
     <Card title="Reviewer change history" subtitle="Local audit of review status changes; not verified actor identities" icon={Activity}>
-      <button className="secondary" onClick={loadAudit} disabled={!key}>Load audit history</button>
+      <button className="secondary" onClick={loadAudit} disabled={oidcConfigured ? !accessToken : !key}>Load audit history</button>
       {audit.length > 0 && <div className="report-list" style={{marginTop:14}}>
         {audit.map(event=><div className="report" key={event.id}>
           <small>{event.changed_at}</small>
