@@ -1,6 +1,6 @@
 # CivicShield AI — live repository tree
 
-Generated from the actual tracked GitHub tree of the project's \`main\` branch. It may evolve as commits land.
+Generated from the actual tracked GitHub tree of the project's `main` branch. It may evolve as commits land.
 
 ~~~text
 CivicShield-AI/
@@ -126,21 +126,21 @@ CivicShield-AI/
 
 | Directory | Responsibilities |
 | --- | --- |
-| \`backend/app\` | FastAPI routing, Pydantic, DB entities, security and human review |
-| \`backend/migrations\` | Initial Alembic schema revision; optional manual PostGIS index |
-| \`src/civicshield/ingestion\` | Open-Meteo modeled-weather client and official-bookmark catalog |
-| \`src/civicshield/ml\` | Binary supervised research training, experimental risk scoring and optional SHAP/MLflow |
-| \`src/civicshield/assistant\` | Curated multilingual preparedness answers and manual-source lexical retrieval |
-| \`src/civicshield/incident_management\` | Text triage, duplicate fingerprints and distance calculation |
-| \`src/civicshield/data_processing\` | Shared ML feature schema |
-| \`src/civicshield/monitoring\` | Source freshness and illustrative drift computation |
-| \`frontend\` | React/Vite dashboard, Leaflet map, provider weather, incident forms, charts |
-| \`tests\` | API, ML, safety, provider, operations and migration/backup-related assertions |
-| \`scripts\` | Dataset auditing, weather collection, local backup/retention and SVG graphs |
-| \`data\` | Untracked/ignored local observations only |
-| \`artifacts\` | Untracked/ignored model and evaluation outputs |
-| \`docs\` | Full project explanation, architecture/sequence diagrams, model card and setup |
-| \`.github/workflows\` | Backend tests, frontend build and migration smoke checks |
+| `backend/app` | FastAPI routing, Pydantic, DB entities, security and human review |
+| `backend/migrations` | Initial Alembic schema revision; optional manual PostGIS index |
+| `src/civicshield/ingestion` | Open-Meteo modeled-weather client and official-bookmark catalog |
+| `src/civicshield/ml` | Binary supervised research training, experimental risk scoring and optional SHAP/MLflow |
+| `src/civicshield/assistant` | Curated multilingual preparedness answers and manual-source lexical retrieval |
+| `src/civicshield/incident_management` | Text triage, duplicate fingerprints and distance calculation |
+| `src/civicshield/data_processing` | Shared ML feature schema |
+| `src/civicshield/monitoring` | Source freshness and illustrative drift computation |
+| `frontend` | React/Vite dashboard, Leaflet map, provider weather, incident forms, charts |
+| `tests` | API, ML, safety, provider, operations and migration/backup-related assertions |
+| `scripts` | Dataset auditing, weather collection, local backup/retention and SVG graphs |
+| `data` | Untracked/ignored local observations only |
+| `artifacts` | Untracked/ignored model and evaluation outputs |
+| `docs` | Full project explanation, architecture/sequence diagrams, model card and setup |
+| `.github/workflows` | Backend tests, frontend build and migration smoke checks |
 
 [Architecture](ARCHITECTURE.md) · [Workflow](PROJECT_WORKFLOW.md) · [Visualizations](VISUALIZATIONS.md) · [Operational runbook](OPERATIONS.md) · [Roadmap](ROADMAP.md)
 
