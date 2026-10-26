@@ -18,6 +18,7 @@ from civicshield.ingestion.sources import SOURCE_CATALOG
 from civicshield.ml.predict import estimate_risk
 from civicshield.ingestion.open_meteo import fetch_weather
 from civicshield.assistant.retrieval import search_docs
+from civicshield.incident_management.geospatial import haversine_km
 from backend.app.security import require_reporter_key, rate_limit, security_headers
 
 @asynccontextmanager
@@ -178,6 +179,33 @@ def review_report(incident_id: str, request: IncidentReview, db: Session = Depen
     db.commit()
     db.refresh(report)
     return reviewer_incident(report)
+
+@app.get("/api/v1/incidents/nearby", tags=["responders"], dependencies=[Depends(require_reviewer)])
+def nearby_incidents(
+    latitude: float = Query(ge=-90, le=90),
+    longitude: float = Query(ge=-180, le=180),
+    radius_km: float = Query(default=10, gt=0, le=50),
+    db: Session = Depends(get_db),
+):
+    # Bounded demo query; use ST_DWithin with a verified PostGIS schema at scale.
+    candidates = db.scalars(
+        select(Incident).where(
+            Incident.latitude.is_not(None), Incident.longitude.is_not(None),
+        ).order_by(Incident.created_at.desc()).limit(5000)
+    ).all()
+    matches = []
+    for incident in candidates:
+        distance = haversine_km(latitude, longitude, incident.latitude, incident.longitude)
+        if distance <= radius_km:
+            matches.append({**reviewer_incident(incident), "distance_km": round(distance, 2)})
+    matches.sort(key=lambda item: item["distance_km"])
+    return {
+        "incidents": matches[:100],
+        "radius_km": radius_km,
+        "scanned_limit": 5000,
+        "total_matches_in_scan": len(matches),
+        "warning": "Unverified citizen reports only. This bounded scan is not authoritative or exhaustive.",
+    }
 
 @app.get("/api/v1/incidents/audit", tags=["responders"], dependencies=[Depends(require_reviewer)])
 def review_audit(db: Session = Depends(get_db)):

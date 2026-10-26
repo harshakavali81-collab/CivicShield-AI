@@ -145,8 +145,9 @@ function ReportIncident() {
   const [fields,setFields] = useState({title:'',description:'',city:'Hyderabad',language:'en'});
   const [done,setDone] = useState(null),[error,setError] = useState(''),[busy,setBusy] = useState(false);
   const [reporterKey,setReporterKey] = useState('');
+  const [coords,setCoords] = useState({latitude:'',longitude:''});
   async function submit(e) {e.preventDefault();setError('');setDone(null);setBusy(true);
-    try { setDone(await api('/api/v1/incidents',{method:'POST',headers:reporterKey ? {'X-Reporter-Key':reporterKey} : {},body:JSON.stringify(fields)})); }
+    try { setDone(await api('/api/v1/incidents',{method:'POST',headers:reporterKey ? {'X-Reporter-Key':reporterKey} : {},body:JSON.stringify({...fields, ...(coords.latitude || coords.longitude ? {latitude:coords.latitude || null, longitude:coords.longitude || null} : {})})})); }
     catch(err){setError(err.message);}finally{setBusy(false);}
   }
   return <>
@@ -159,6 +160,11 @@ function ReportIncident() {
         <div className="form-grid">
           <label>City<input required minLength={2} maxLength={80} value={fields.city} onChange={e=>setFields({...fields,city:e.target.value})}/></label>
           <label>Language<select value={fields.language} onChange={e=>setFields({...fields,language:e.target.value})}>{Object.entries(languages).map(([code,label])=><option key={code} value={code}>{label}</option>)}</select></label>
+        </div>
+        <p className="muted">Optional geographic coordinates are shown only to authorized demo reviewers. Avoid private home locations.</p>
+        <div className="form-grid">
+          <label>Latitude (optional)<input type="number" step="any" min="-90" max="90" value={coords.latitude} onChange={e=>setCoords({...coords,latitude:e.target.value})} /></label>
+          <label>Longitude (optional)<input type="number" step="any" min="-180" max="180" value={coords.longitude} onChange={e=>setCoords({...coords,longitude:e.target.value})} /></label>
         </div>
         <label>Reporter access key (optional, required if the operator configured one)
           <input type="password" autoComplete="off" value={reporterKey} onChange={e=>setReporterKey(e.target.value)} placeholder="Local demo reporter key" />
@@ -173,9 +179,18 @@ function ReportIncident() {
 function ResponderReview() {
   const [key,setKey] = useState(''),[reports,setReports] = useState([]),[error,setError] = useState(''),[message,setMessage] = useState(''),[busy,setBusy] = useState(false);
   const [audit,setAudit] = useState([]);
+  const [geo,setGeo] = useState({latitude:'17.38',longitude:'78.48',radius_km:10});
+  const [geoResults,setGeoResults] = useState(null);
   async function load() {setBusy(true);setError('');setMessage('');
     try {const data=await api('/api/v1/incidents/review',{headers:{'X-Responder-Key':key}});setReports(data.incidents);}
     catch(err){setError(err.message);setReports([]);}finally{setBusy(false);}
+  }
+  async function searchNearby() {setError('');
+    try {
+      const params = new URLSearchParams(geo);
+      const result=await api('/api/v1/incidents/nearby?'+params,{headers:{'X-Responder-Key':key}});
+      setGeoResults(result);
+    } catch(err) {setError(err.message);}
   }
   async function loadAudit() {setError('');
     try {const data=await api('/api/v1/incidents/audit',{headers:{'X-Responder-Key':key}});setAudit(data.events || []);}
@@ -201,6 +216,20 @@ function ResponderReview() {
         {report.duplicate_of && <small>Possible duplicate: {report.duplicate_of}</small>}
         <div className="actions">{['verified','dismissed','needs_info'].map(status=><button className="secondary small" key={status} onClick={()=>review(report.id,status)}>{status.replace('_',' ')}</button>)}</div>
       </div>)}</div>}
+    </Card>
+    <Card title="Geographic report filtering" subtitle="Restricted location filtering — unverified reports, not rescue routes" icon={MapPinned}>
+      <div className="form-grid">
+        <label>Latitude<input type="number" min="-90" max="90" step="any" value={geo.latitude} onChange={e=>setGeo({...geo,latitude:e.target.value})}/></label>
+        <label>Longitude<input type="number" min="-180" max="180" step="any" value={geo.longitude} onChange={e=>setGeo({...geo,longitude:e.target.value})}/></label>
+        <label>Search radius (km)<input type="number" min="0.1" max="50" step="0.1" value={geo.radius_km} onChange={e=>setGeo({...geo,radius_km:e.target.value})}/></label>
+        <div className="actions"><button className="secondary" onClick={searchNearby} disabled={!key}>Find nearby reports</button></div>
+      </div>
+      {geoResults && <div className="report-list" style={{marginTop:15}}>
+        <p className="muted">{geoResults.total_matches_in_scan} matching local reports. Results limited to 100; search is not authoritative or complete.</p>
+        {geoResults.incidents.map(r=><div className="report" key={r.id}>
+          <b>{r.title}</b><p>{r.city} · {r.distance_km} km · {r.status}</p>
+        </div>)}
+      </div>}
     </Card>
     <Card title="Reviewer change history" subtitle="Local audit of review status changes; not verified actor identities" icon={Activity}>
       <button className="secondary" onClick={loadAudit} disabled={!key}>Load audit history</button>
