@@ -59,7 +59,11 @@ CivicShield-AI/
 │   ├── README.md
 │   ├── raw/.gitkeep
 │   └── processed/.gitkeep
+├── scripts/
+│   ├── __init__.py
+│   └── plot_metrics.py
 ├── tests/
+│   └── test_visualizations.py  # plus the following tests
 │   ├── conftest.py
 │   ├── test_api.py
 │   ├── test_guidance.py
@@ -72,6 +76,9 @@ CivicShield-AI/
 │   ├── DEMO_SCRIPT.md
 │   ├── DEPLOYMENT.md
 │   ├── MODEL_CARD.md
+│   ├── VISUALIZATIONS.md
+│   ├── assets/
+│   │   └── architecture.svg
 │   ├── PROJECT_TREE.md
 │   ├── PROJECT_WORKFLOW.md
 │   ├── ROADMAP.md
