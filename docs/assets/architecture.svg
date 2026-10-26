@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1100" height="330" viewBox="0 0 1100 330" role="img" aria-labelledby="title desc">
+<title id="title">CivicShield AI component overview</title>
+<desc id="desc">Validated user data goes through a freshness gate, experimental risk logic, FastAPI and the React dashboard; reports are handled separately and reviewed by humans.</desc>
+<rect width="1100" height="330" fill="#f6f9ff" rx="16"/>
+<text x="36" y="47" font-size="25" font-family="Arial" font-weight="bold" fill="#19345d">CivicShield AI — research demo architecture</text>
+<text x="36" y="74" font-size="14" font-family="Arial" fill="#6680a0">Experimental indicators and human-reviewed reporting · NEVER an official warning service</text>
+<g font-family="Arial" font-size="16" text-anchor="middle">
+<rect x="35" y="122" width="170" height="92" rx="13" fill="#e3efff" stroke="#83b2f4"/>
+<text x="120" y="157" fill="#234b7d">User inputs</text><text x="120" y="180" font-size="13" fill="#5d769a">Synthetic demo</text>
+<rect x="252" y="122" width="170" height="92" rx="13" fill="#e3efff" stroke="#83b2f4"/>
+<text x="337" y="158" fill="#234b7d">Validate and</text><text x="337" y="181" fill="#234b7d">check freshness</text>
+<rect x="467" y="122" width="170" height="92" rx="13" fill="#fff2dd" stroke="#d5a95c"/>
+<text x="552" y="156" fill="#805614">Experimental risk</text><text x="552" y="180" font-size="13" fill="#805614">Never official</text>
+<rect x="680" y="122" width="170" height="92" rx="13" fill="#e9f7ed" stroke="#80c998"/>
+<text x="765" y="156" fill="#246c40">FastAPI + SQL</text><text x="765" y="180" font-size="13" fill="#4c8564">Human report review</text>
+<rect x="891" y="122" width="170" height="92" rx="13" fill="#e3efff" stroke="#83b2f4"/>
+<text x="976" y="156" fill="#234b7d">React dashboard</text><text x="976" y="180" font-size="13" fill="#5d769a">Map + charts</text>
+</g>
+<g stroke="#5b7ea9" stroke-width="3" fill="none">
+<path d="M206 168 H245 M422 168 H460 M637 168 H672 M850 168 H883"/>
+</g><g fill="#5b7ea9"><path d="M245 168 l-8 -5 v10z M460 168 l-8 -5 v10z M672 168 l-8 -5 v10z M883 168 l-8 -5 v10z"/></g>
+<rect x="35" y="252" width="1026" height="47" rx="8" fill="#f9eadd"/>
+<text x="548" y="280" text-anchor="middle" font-family="Arial" font-size="15" font-weight="bold" fill="#915e19">No live official alert feeds · Stale data returns unavailable · Local training requires validated real labels</text>
+</svg>
