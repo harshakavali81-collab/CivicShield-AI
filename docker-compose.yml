@@ -23,6 +23,8 @@ services:
       DATABASE_URL: postgresql+psycopg://civicshield:${POSTGRES_PASSWORD:-local_demo_change_me}@db:5432/civicshield
       INCIDENT_SUBMISSIONS_ENABLED: ${INCIDENT_SUBMISSIONS_ENABLED:-false}
       RESPONDER_API_KEY: ${RESPONDER_API_KEY:-}
+      REPORTER_API_KEY: ${REPORTER_API_KEY:-}
+      OPEN_METEO_ENABLED: ${OPEN_METEO_ENABLED:-false}
       CIVICSHIELD_MODEL_PATH: ""
     depends_on:
       db:

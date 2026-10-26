@@ -7,6 +7,8 @@ import {
 import { Area, AreaChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts';
 import { api } from './api.js';
 import MapPanel from './MapPanel.jsx';
+import LiveWeather from './LiveWeather.jsx';
+import KnowledgeSearch from './KnowledgeSearch.jsx';
 
 const riskDefaults = { city: 'Hyderabad', rainfall_24h_mm: 68, temperature_c: 29, humidity_pct: 85, forecast_age_hours: 1 };
 const categories = { flooding: 'Flood / waterlogging', fallen_tree: 'Fallen tree', road_block: 'Road block', heat: 'Heat', other: 'Other' };
@@ -14,6 +16,7 @@ const languages = { en: 'English', te: 'తెలుగు', hi: 'हिन्�
 const nav = [
   ['dashboard', LayoutDashboard, 'Overview'],
   ['risk', CloudRain, 'Risk explorer'],
+  ['weather', CloudRain, 'Modeled weather'],
   ['map', MapPinned, 'Illustrative map'],
   ['assistant', MessageCircle, 'Safety guidance'],
   ['report', FileWarning, 'Report an incident'],
@@ -53,7 +56,7 @@ function Dashboard({ onNavigate }) {
       <Metric label="Risk model" value="Demo" detail="Unvalidated heuristic by default" icon={Activity} />
     </div>
     <div className="columns-two">
-      <Card title="Example report activity" subtitle="Synthetic seven-day series — not actual incidents" icon={BarChart3}>
+      <Card title="Locally submitted reports" subtitle="Actual stored report totals — not verified incidents" icon={BarChart3}>
         <div className="chart-wrap">{trends ? <ResponsiveContainer width="100%" height="100%">
           <AreaChart data={trends.data}><defs><linearGradient id="trendGradient" x1="0" x2="0" y1="0" y2="1"><stop offset="0%" stopColor="#367cf5" stopOpacity={0.35}/><stop offset="100%" stopColor="#367cf5" stopOpacity={0.01}/></linearGradient></defs>
           <CartesianGrid stroke="#e9eef6" strokeDasharray="3 3"/><XAxis dataKey="date" tick={{fontSize:10}} tickFormatter={v => v.slice(5)}/><YAxis allowDecimals={false} tick={{fontSize:11}}/><Tooltip/><Area type="monotone" dataKey="reports" stroke="#367cf5" strokeWidth={3} fill="url(#trendGradient)" />
@@ -209,8 +212,9 @@ export default function App() {
       <main id="main-content" className="main-content">
         {tab==='dashboard'&&<Dashboard onNavigate={navigate}/>}
         {tab==='risk'&&<RiskExplorer/>}
+        {tab==='weather'&&<LiveWeather/>}
         {tab==='map'&&<><div className="page-heading"><div><div className="eyebrow">LOCATION VIEW</div><h1>Illustrative map</h1><p>Demonstration landmarks only; not risk estimates, emergencies, or verified events.</p></div></div><Notice type="warning">Map pins are synthetic placeholders. Consult official sources for current advisories.</Notice><Card title="Hyderabad area — demonstration pins" icon={MapPinned}><div className="large-map"><MapPanel/></div></Card></>}
-        {tab==='assistant'&&<SafetyAssistant/>}
+        {tab==='assistant'&&<><SafetyAssistant/><KnowledgeSearch/></>}
         {tab==='report'&&<ReportIncident/>}
         {tab==='review'&&<ResponderReview/>}
       </main>
