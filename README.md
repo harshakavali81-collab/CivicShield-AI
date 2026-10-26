@@ -58,7 +58,7 @@ Docker provides PostGIS/PostgreSQL as persistence. Local development is bound to
 
 ### Third-party modeled weather (opt-in)
 
-Enable \`OPEN_METEO_ENABLED=true\` in the API process environment or Docker \`.env\`. This route never returns official warnings and never substitutes synthetic weather for failed provider requests:
+Enable `OPEN_METEO_ENABLED=true` in the API process environment or Docker `.env`. This route never returns official warnings and never substitutes synthetic weather for failed provider requests:
 
 ~~~bash
 curl "http://localhost:8000/api/v1/weather/live?latitude=17.38&longitude=78.48"
@@ -84,7 +84,7 @@ python -m scripts.check_data_quality /path/to/labeled.csv
 DATABASE_URL=sqlite:///./empty_demo.db alembic upgrade head  # only fresh empty DB
 ~~~
 
-Add \`--confirm\` to purge only when you truly intend permanent deletion of old local demo records and their review audit entries. See [operator notes](docs/OPERATIONS.md). Optional \`pip install -e ".[explain,tracking]"\` enables SHAP/MLflow experiment helpers, not production model operations.
+Add `--confirm` to purge only when you truly intend permanent deletion of old local demo records and their review audit entries. See [operator notes](docs/OPERATIONS.md). Optional `pip install -e ".[explain,tracking]"` enables SHAP/MLflow experiment helpers, not production model operations.
 
 ## API examples
 
