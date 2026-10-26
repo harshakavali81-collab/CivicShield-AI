@@ -36,6 +36,18 @@ class Incident(Base):
         DateTime(timezone=True), default=lambda: datetime.now(timezone.utc)
     )
 
+class ReviewAudit(Base):
+    """Local reviewer audit. No identity proof beyond configured shared demo key."""
+    __tablename__ = "review_audit"
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    incident_id: Mapped[str] = mapped_column(String(36), index=True)
+    previous_status: Mapped[str] = mapped_column(String(20))
+    new_status: Mapped[str] = mapped_column(String(20))
+    reviewer_note: Mapped[str] = mapped_column(Text, default="")
+    changed_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), default=lambda: datetime.now(timezone.utc)
+    )
+
 def get_db():
     with SessionLocal() as session:
         yield session

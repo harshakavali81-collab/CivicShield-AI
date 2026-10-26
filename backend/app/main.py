@@ -4,11 +4,11 @@ from contextlib import asynccontextmanager
 from datetime import datetime, timedelta, timezone
 import hmac
 import os
-from fastapi import Depends, FastAPI, Header, HTTPException
-from sqlalchemy import func, select
+from fastapi import Depends, FastAPI, Header, HTTPException, Query, Request
+from sqlalchemy import func, select, text
 from sqlalchemy.orm import Session
 from backend.app.config import responder_key, submissions_enabled
-from backend.app.db import Base, Incident, engine, get_db
+from backend.app.db import Base, Incident, ReviewAudit, engine, get_db
 from backend.app.schemas import AssistantQuestion, IncidentCreate, IncidentReview, RiskRequest
 from civicshield.assistant.guidance import answer
 from civicshield.incident_management.triage import (
@@ -16,6 +16,9 @@ from civicshield.incident_management.triage import (
 )
 from civicshield.ingestion.sources import SOURCE_CATALOG
 from civicshield.ml.predict import estimate_risk
+from civicshield.ingestion.open_meteo import fetch_weather
+from civicshield.assistant.retrieval import search_docs
+from backend.app.security import require_reporter_key, rate_limit, security_headers
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -28,6 +31,10 @@ app = FastAPI(
     version="0.1.0",
     lifespan=lifespan,
 )
+
+@app.middleware("http")
+async def apply_security_headers(request: Request, call_next):
+    return security_headers(await call_next(request))
 
 def require_reviewer(x_responder_key: str | None = Header(default=None)):
     secret = responder_key()
@@ -78,6 +85,22 @@ def sample_weather():
         "notice": "These are invented sample values for UI testing, not observations or forecasts.",
     }
 
+@app.get("/api/v1/weather/live", tags=["weather"])
+async def live_weather(
+    request: Request,
+    latitude: float = Query(ge=-90, le=90),
+    longitude: float = Query(ge=-180, le=180),
+):
+    if os.getenv("OPEN_METEO_ENABLED", "false").lower() != "true":
+        raise HTTPException(status_code=503, detail="Modeled weather feed disabled by operator")
+    rate_limit(request, "live_weather", limit=20, window_seconds=3600)
+    try:
+        return await fetch_weather(latitude, longitude)
+    except Exception as exc:
+        # Includes upstream service outages and invalid/insufficient data.
+        # Fail closed: never substitute a demo figure as live weather.
+        raise HTTPException(status_code=503, detail="Modeled weather unavailable; consult official sources") from exc
+
 @app.post("/api/v1/risk/estimate", tags=["risk"])
 def risk_estimate(request: RiskRequest):
     try:
@@ -98,10 +121,21 @@ def risk_estimate(request: RiskRequest):
 def ask(request: AssistantQuestion):
     return answer(request.question, request.language)
 
+@app.get("/api/v1/assistant/knowledge", tags=["assistant"])
+def knowledge_search(request: Request, q: str = Query(min_length=2, max_length=200)):
+    rate_limit(request, "knowledge", limit=120, window_seconds=3600)
+    return {
+        "items": search_docs(q), "corpus_size": 5, "live_retrieval": False,
+        "source_type": "manual_curated_summaries",
+        "warning": "Educational summaries only, not latest safety bulletins or official notices.",
+    }
+
 @app.post("/api/v1/incidents", tags=["incidents"], status_code=201)
-def create_incident(request: IncidentCreate, db: Session = Depends(get_db)):
+def create_incident(request: IncidentCreate, http_request: Request, db: Session = Depends(get_db)):
     if not submissions_enabled():
         raise HTTPException(status_code=503, detail="Public submissions disabled until abuse/privacy safeguards are configured")
+    require_reporter_key(http_request)
+    rate_limit(http_request, "report", limit=30, window_seconds=3600)
     title = redact_contact_info(request.title)
     description = redact_contact_info(request.description)
     city = redact_contact_info(request.city)
@@ -134,11 +168,41 @@ def review_report(incident_id: str, request: IncidentReview, db: Session = Depen
     report = db.get(Incident, incident_id)
     if not report:
         raise HTTPException(status_code=404, detail="Report not found")
+    previous = report.status
     report.status = request.status
     report.reviewer_note = redact_contact_info(request.reviewer_note)
+    db.add(ReviewAudit(
+        incident_id=incident_id, previous_status=previous, new_status=request.status,
+        reviewer_note=report.reviewer_note,
+    ))
     db.commit()
     db.refresh(report)
     return reviewer_incident(report)
+
+@app.get("/api/v1/incidents/audit", tags=["responders"], dependencies=[Depends(require_reviewer)])
+def review_audit(db: Session = Depends(get_db)):
+    events = db.scalars(select(ReviewAudit).order_by(ReviewAudit.changed_at.desc()).limit(100)).all()
+    return {"events": [
+        {
+            "id": e.id, "incident_id": e.incident_id,
+            "previous_status": e.previous_status, "new_status": e.new_status,
+            "changed_at": e.changed_at.isoformat(),
+        }
+        for e in events
+    ], "note": "Local demo audit; not verified actor attribution."}
+
+@app.get("/api/v1/ops/status", tags=["operations"], dependencies=[Depends(require_reviewer)])
+def ops_status(db: Session = Depends(get_db)):
+    db.execute(text("SELECT 1"))
+    return {
+        "database": "reachable",
+        "modeled_weather_enabled": os.getenv("OPEN_METEO_ENABLED", "false").lower() == "true",
+        "official_alert_feed_connected": False,
+        "reporter_access_key_configured": bool(os.getenv("REPORTER_API_KEY")),
+        "reviewer_access_key_configured": bool(responder_key()),
+        "incident_submissions_enabled": submissions_enabled(),
+        "notice": "Does not measure actual production health or safety coverage.",
+    }
 
 @app.get("/api/v1/analytics/summary", tags=["analytics"])
 def summary(db: Session = Depends(get_db)):
@@ -156,12 +220,22 @@ def summary(db: Session = Depends(get_db)):
     }
 
 @app.get("/api/v1/analytics/trends", tags=["analytics"])
-def trends():
+def trends(db: Session = Depends(get_db)):
+    # Accurate counts of locally submitted demo reports, not nationwide events.
     today = datetime.now(timezone.utc).date()
+    days = [(today - timedelta(days=6-i)) for i in range(7)]
+    totals = {d.isoformat(): 0 for d in days}
+    since = datetime.combine(days[0], datetime.min.time(), tzinfo=timezone.utc)
+    dates = db.scalars(select(Incident.created_at).where(Incident.created_at >= since)).all()
+    for created_at in dates:
+        # SQLite may round-trip tz-naive UTC values; normalize explicitly.
+        timestamp = created_at if created_at.tzinfo else created_at.replace(tzinfo=timezone.utc)
+        key = timestamp.astimezone(timezone.utc).date().isoformat()
+        if key in totals:
+            totals[key] += 1
     return {
-        "data": [
-            {"date": (today - timedelta(days=6-i)).isoformat(), "reports": n}
-            for i, n in enumerate((2, 3, 2, 5, 4, 6, 3))
-        ],
-        "source_type": "synthetic_demo", "not_real_events": True,
+        "data": [{"date": date, "reports": totals[date]} for date in totals],
+        "source_type": "locally_submitted_demo_reports",
+        "not_real_events": True,
+        "note": "Actual locally stored report counts; not validated disaster occurrences.",
     }
