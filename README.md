@@ -2,18 +2,24 @@
 
 **Multilingual Public Safety, Disaster Risk Demonstration & Incident Review Platform**
 
-[Architecture](docs/ARCHITECTURE.md) · [Project tree](docs/PROJECT_TREE.md) · [Workflow](docs/PROJECT_WORKFLOW.md) · [API](docs/API_REFERENCE.md) · [Model card](docs/MODEL_CARD.md) · [Safety and privacy](docs/SAFETY_AND_PRIVACY.md) · [Testing](docs/TEST_PLAN.md) · [Visualizations](docs/VISUALIZATIONS.md) · [Deployment](docs/DEPLOYMENT.md)
+[Architecture](docs/ARCHITECTURE.md) · [Project tree](docs/PROJECT_TREE.md) · [Workflow](docs/PROJECT_WORKFLOW.md) · [API](docs/API_REFERENCE.md) · [Model card](docs/MODEL_CARD.md) · [Safety and privacy](docs/SAFETY_AND_PRIVACY.md) · [Testing](docs/TEST_PLAN.md) · [Visualizations](docs/VISUALIZATIONS.md) · [Deployment](docs/DEPLOYMENT.md) · [Operations](docs/OPERATIONS.md) · [Roadmap](docs/ROADMAP.md)
 
 > **SAFETY NOTICE:** This is a portfolio/research demo, **not** an official warning system, emergency service, evacuation tool, or reliable prediction of disaster safety. Risk indicators are experimental; demo samples are synthetic. Follow official authorities. During emergencies contact local emergency services.
 
+## Current engineering status
+
+[![CivicShield CI](https://github.com/harshakavali81-collab/CivicShield-AI/actions/workflows/ci.yml/badge.svg)](https://github.com/harshakavali81-collab/CivicShield-AI/actions/workflows/ci.yml)
+
+**Local development/research demo, not a deployed public emergency-warning system.** API tests, React build and initial database migration are checked by GitHub Actions. The weather explorer can fetch third-party *modeled* weather when explicitly enabled; official IMD/CWC alerts are **not connected**. No public-safety efficacy is claimed.
+
 ## Features
 
-- **Risk explorer:** explicit, explainable demonstration thresholds; stale inputs are rejected. Optionally use a user-trained supervised model based on supplied labeled historical data.
-- **Multilingual guidance:** English, Telugu, Hindi, Tamil and Kannada curated preparedness responses. Not a live RAG/official advisory service.
+- **Risk explorer:** explicit, explainable demonstration thresholds; stale inputs are rejected. Optionally use a user-trained supervised model based on legally obtained labeled historical data.
+- **Multilingual guidance:** English, Telugu, Hindi, Tamil and Kannada curated preparedness responses; separate searchable source-linked mini library. Not an LLM-based, live official RAG service.
 - **Citizen incident reports:** input validation, privacy-conscious storage, duplicate detection, suggested priority and **human-only** review decisions.
-- **Responsive React dashboard:** map, incident analytics, trends and source links, with demo data labeled.
-- **Developer quality:** FastAPI, SQLAlchemy (SQLite local / PostgreSQL for Docker), tests, Docker Compose, CI, architecture diagrams, docs.
-- **Safety:** no invented government alerts, no personal phone collection, no public disclosure of incident coordinates.
+- **Responsive React dashboard:** map, incident analytics, actual locally submitted report-count trends, and clearly labeled demo locations. Opt-in provider-backed weather explorer with source attribution.
+- **Developer quality:** FastAPI, SQLAlchemy (SQLite local / PostgreSQL for Docker), Alembic initial migration, controlled backups/purge, tests, Docker Compose, CI, architecture diagrams, docs, local experiment graph generator.
+- **Safety:** no invented government alerts, no personal phone collection, no public disclosure of exact incident coordinates or narratives, reviewer audit log and optional reporter key. No distributed RBAC/anti-abuse claims.
 
 ## Quick start
 
@@ -22,7 +28,7 @@
 ```bash
 python -m venv .venv
 source .venv/bin/activate   # Windows: .venv\Scripts\activate
-pip install -e ".[dev]"
+pip install -e ".[dev,migrations]"
 uvicorn backend.app.main:app --reload
 pytest -q
 ```
@@ -46,7 +52,39 @@ cp .env.example .env
 docker compose up --build
 ```
 
-Docker provides PostGIS/PostgreSQL as persistence. Local development is bound to localhost only. Incident submissions are disabled by default in the API unless explicitly enabled. Set a strong `RESPONDER_API_KEY` to enable authenticated review routes. **Do not deploy this configuration to the public internet.**
+Docker provides PostGIS/PostgreSQL as persistence. Local development is bound to localhost only. Set a strong local `POSTGRES_PASSWORD` in `.env`. Incident submissions are disabled by default in the API unless explicitly enabled. Set a strong `RESPONDER_API_KEY` to enable authenticated review routes. **Do not deploy this configuration to the public internet.**
+
+## Additional working modules
+
+### Third-party modeled weather (opt-in)
+
+Enable \`OPEN_METEO_ENABLED=true\` in the API process environment or Docker \`.env\`. This route never returns official warnings and never substitutes synthetic weather for failed provider requests:
+
+~~~bash
+curl "http://localhost:8000/api/v1/weather/live?latitude=17.38&longitude=78.48"
+~~~
+
+It displays temperature, relative humidity and a 24-hour modeled precipitation accumulation with source timestamp, approximate coordinates and Open-Meteo / CC BY 4.0 attribution. Respect the provider's noncommercial free-tier terms.
+
+### Search curated safety references
+
+~~~bash
+curl "http://localhost:8000/api/v1/assistant/knowledge?q=flood"
+~~~
+
+Curated mini-corpus, not currently synchronized official warnings.
+
+### Maintenance and experiments
+
+~~~bash
+python -m scripts.collect_weather --latitude 17.38 --longitude 78.48
+python -m scripts.backup_sqlite
+python -m scripts.purge_incidents --days 30           # dry run
+python -m scripts.check_data_quality /path/to/labeled.csv
+DATABASE_URL=sqlite:///./empty_demo.db alembic upgrade head  # only fresh empty DB
+~~~
+
+Add \`--confirm\` to purge only when you truly intend permanent deletion of old local demo records and their review audit entries. See [operator notes](docs/OPERATIONS.md). Optional \`pip install -e ".[explain,tracking]"\` enables SHAP/MLflow experiment helpers, not production model operations.
 
 ## API examples
 
@@ -93,7 +131,7 @@ flowchart LR
 
 ## Limitations and roadmap
 
-This repository provides a locally runnable **demonstration**, not a deployed production emergency service. Live IMD warning feeds, validated forecasting datasets, genuine retrieval-augmented generation, SHAP explanations, calibrated models, government integrations, RBAC/OIDC, anti-abuse controls, accessibility field tests and production monitoring require additional integration, evaluation and operational approval. See [roadmap](docs/ROADMAP.md).
+This repository provides a locally runnable **demonstration**, not a deployed production emergency service. Live IMD warning feeds, validated forecasting datasets, a genuine generative retrieval-augmented assistant, calibrated models, government integrations, production OIDC/RBAC, distributed anti-abuse controls, accessibility field tests and production monitoring require additional engineering or approvals. Optional SHAP/MLflow code is experimental and not deployed. See [roadmap](docs/ROADMAP.md).
 
 ## License
 
