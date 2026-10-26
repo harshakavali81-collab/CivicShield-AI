@@ -144,8 +144,9 @@ function SafetyAssistant() {
 function ReportIncident() {
   const [fields,setFields] = useState({title:'',description:'',city:'Hyderabad',language:'en'});
   const [done,setDone] = useState(null),[error,setError] = useState(''),[busy,setBusy] = useState(false);
+  const [reporterKey,setReporterKey] = useState('');
   async function submit(e) {e.preventDefault();setError('');setDone(null);setBusy(true);
-    try { setDone(await api('/api/v1/incidents',{method:'POST',body:JSON.stringify(fields)})); }
+    try { setDone(await api('/api/v1/incidents',{method:'POST',headers:reporterKey ? {'X-Reporter-Key':reporterKey} : {},body:JSON.stringify(fields)})); }
     catch(err){setError(err.message);}finally{setBusy(false);}
   }
   return <>
@@ -159,6 +160,9 @@ function ReportIncident() {
           <label>City<input required minLength={2} maxLength={80} value={fields.city} onChange={e=>setFields({...fields,city:e.target.value})}/></label>
           <label>Language<select value={fields.language} onChange={e=>setFields({...fields,language:e.target.value})}>{Object.entries(languages).map(([code,label])=><option key={code} value={code}>{label}</option>)}</select></label>
         </div>
+        <label>Reporter access key (optional, required if the operator configured one)
+          <input type="password" autoComplete="off" value={reporterKey} onChange={e=>setReporterKey(e.target.value)} placeholder="Local demo reporter key" />
+        </label>
         <button className="primary" type="submit" disabled={busy}>{busy?'Submitting...':'Submit for review'}</button>
       </form>
       {error && <Notice type="warning">{error}</Notice>}
@@ -168,9 +172,14 @@ function ReportIncident() {
 }
 function ResponderReview() {
   const [key,setKey] = useState(''),[reports,setReports] = useState([]),[error,setError] = useState(''),[message,setMessage] = useState(''),[busy,setBusy] = useState(false);
+  const [audit,setAudit] = useState([]);
   async function load() {setBusy(true);setError('');setMessage('');
     try {const data=await api('/api/v1/incidents/review',{headers:{'X-Responder-Key':key}});setReports(data.incidents);}
     catch(err){setError(err.message);setReports([]);}finally{setBusy(false);}
+  }
+  async function loadAudit() {setError('');
+    try {const data=await api('/api/v1/incidents/audit',{headers:{'X-Responder-Key':key}});setAudit(data.events || []);}
+    catch(err){setError(err.message);}
   }
   async function review(id,status) {setError('');setMessage('');
     try {await api('/api/v1/incidents/'+encodeURIComponent(id)+'/review',{method:'PATCH',headers:{'X-Responder-Key':key},body:JSON.stringify({status,reviewer_note:'Reviewed in demonstration dashboard'})});setMessage('Report updated by reviewer.');await load();}
@@ -192,6 +201,15 @@ function ResponderReview() {
         {report.duplicate_of && <small>Possible duplicate: {report.duplicate_of}</small>}
         <div className="actions">{['verified','dismissed','needs_info'].map(status=><button className="secondary small" key={status} onClick={()=>review(report.id,status)}>{status.replace('_',' ')}</button>)}</div>
       </div>)}</div>}
+    </Card>
+    <Card title="Reviewer change history" subtitle="Local audit of review status changes; not verified actor identities" icon={Activity}>
+      <button className="secondary" onClick={loadAudit} disabled={!key}>Load audit history</button>
+      {audit.length > 0 && <div className="report-list" style={{marginTop:14}}>
+        {audit.map(event=><div className="report" key={event.id}>
+          <small>{event.changed_at}</small>
+          <p>Report {event.incident_id}: <b>{event.previous_status}</b> → <b>{event.new_status}</b></p>
+        </div>)}
+      </div>}
     </Card>
   </>;
 }

@@ -29,11 +29,6 @@ def test_provider_response_fresh_and_precipitation_sum():
     assert weather["modeled_precipitation_24h_mm"] == 36
     assert weather["license_url"].endswith("/4.0/")
 
-@pytest.mark.parametrize("payload", [modelled for modelled in []])
-def test_placeholder(payload):
-    """No parametrized cases; tests below cover invalid provider responses."""
-    assert payload
-
 def test_provider_response_fail_closed():
     with pytest.raises((ValueError, KeyError)):
         normalize({"current": {"time": "2026-01-01"}, "hourly": {}}, 17, 78)
@@ -155,3 +150,30 @@ def test_shift_heuristic_requires_samples():
     result = distribution_shift(list(range(100)), list(range(100, 200)))
     assert result["status"] == "review_recommended"
     assert result["drift_score"] > 1
+
+def test_retention_purges_review_audit_with_report(client):
+    from backend.app.db import Incident, ReviewAudit, SessionLocal
+    from scripts.purge_incidents import purge
+    from sqlalchemy import select, func
+    original = client.post("/api/v1/incidents", json={
+        "title": "Flood across main road",
+        "description": "Water is covering several road lanes.",
+        "city": "Hyderabad",
+    })
+    assert original.status_code == 201
+    rid = original.json()["id"]
+    headers = {"X-Responder-Key": "test-only-review-key"}
+    assert client.patch(f"/api/v1/incidents/{rid}/review", headers=headers, json={
+        "status": "needs_info", "reviewer_note": "Request more context"
+    }).status_code == 200
+    with SessionLocal() as session:
+        report = session.get(Incident, rid)
+        report.created_at = datetime.now(timezone.utc) - timedelta(days=45)
+        session.commit()
+    assert purge(30, confirm=False) == 1
+    with SessionLocal() as session:
+        assert session.get(Incident, rid) is not None
+    assert purge(30, confirm=True) == 1
+    with SessionLocal() as session:
+        assert session.get(Incident, rid) is None
+        assert session.scalar(select(func.count()).select_from(ReviewAudit)) == 0

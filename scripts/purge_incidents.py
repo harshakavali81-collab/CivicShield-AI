@@ -8,7 +8,7 @@ from __future__ import annotations
 import argparse
 from datetime import datetime, timedelta, timezone
 from sqlalchemy import delete, func, select
-from backend.app.db import Incident, SessionLocal
+from backend.app.db import Incident, ReviewAudit, SessionLocal
 
 def purge(days: int, confirm: bool = False) -> int:
     if not 1 <= days <= 3650:
@@ -17,6 +17,9 @@ def purge(days: int, confirm: bool = False) -> int:
     with SessionLocal() as session:
         count = session.scalar(select(func.count()).select_from(Incident).where(Incident.created_at < cutoff)) or 0
         if confirm and count:
+            doomed_ids = select(Incident.id).where(Incident.created_at < cutoff)
+            # Purge linked audit history, too. Do not leave re-identifiable orphan records.
+            session.execute(delete(ReviewAudit).where(ReviewAudit.incident_id.in_(doomed_ids)))
             session.execute(delete(Incident).where(Incident.created_at < cutoff))
             session.commit()
         return count
