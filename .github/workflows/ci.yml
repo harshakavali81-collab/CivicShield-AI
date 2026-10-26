@@ -12,11 +12,15 @@ jobs:
         with:
           python-version: "3.12"
       - name: Install backend and test dependencies
-        run: python -m pip install -e ".[dev]"
+        run: python -m pip install -e ".[dev,migrations]"
       - name: Compile Python
         run: python -m compileall -q backend src
       - name: Run tests
         run: pytest -q
+      - name: Migration smoke test (fresh SQLite)
+        run: |
+          DATABASE_URL=sqlite:///./migration_ci.db alembic upgrade head
+          DATABASE_URL=sqlite:///./migration_ci.db alembic current
   frontend-build:
     runs-on: ubuntu-latest
     steps:
