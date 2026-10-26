@@ -20,10 +20,19 @@ from civicshield.ingestion.open_meteo import fetch_weather
 from civicshield.assistant.retrieval import search_docs
 from civicshield.incident_management.geospatial import haversine_km
 from backend.app.security import require_reporter_key, rate_limit, security_headers
+from backend.app.oidc import oidc_enabled, require_oidc_reviewer, validate_production_configuration
+from civicshield.ingestion.imd_official import enabled as imd_enabled, fetch_district_warning
+from civicshield.ingestion.cwc_official import integration_status
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    Base.metadata.create_all(bind=engine)
+    validate_production_configuration()
+    if os.getenv("APP_ENV", "local") != "production":
+        Base.metadata.create_all(bind=engine)
+    else:
+        # Production schema must already have completed reviewed Alembic migrations.
+        with engine.connect() as connection:
+            connection.execute(text("SELECT 1"))
     yield
 
 app = FastAPI(
@@ -37,13 +46,17 @@ app = FastAPI(
 async def apply_security_headers(request: Request, call_next):
     return security_headers(await call_next(request))
 
-def require_reviewer(x_responder_key: str | None = Header(default=None)):
+def require_reviewer(request: Request, x_responder_key: str | None = Header(default=None)):
+    if oidc_enabled():
+        return require_oidc_reviewer(request)
+    if os.getenv("APP_ENV", "local") == "production":
+        raise HTTPException(status_code=503, detail="Demo authentication not permitted in production")
     secret = responder_key()
     if not secret:
         raise HTTPException(status_code=503, detail="Responder review not configured")
     if not x_responder_key or not hmac.compare_digest(x_responder_key, secret):
         raise HTTPException(status_code=403, detail="Responder authentication required")
-    return True
+    return {"role": "local_demo_reviewer"}
 
 def public_incident(incident: Incident) -> dict:
     # Intentionally never publish reporter narrative, exact coordinates, or identifying data.
@@ -76,6 +89,35 @@ def alerts():
         "message": "No live official alert feed is connected; an empty list does not mean there are no warnings.",
         "sources": SOURCE_CATALOG, "is_official_warning": False,
     }
+
+
+@app.get("/api/v1/official/integration-status", tags=["sources"])
+def official_integration_status():
+    return {
+        "imd": {
+            "enabled": imd_enabled(),
+            "api_reference": "https://api.imd.gov.in/public/api_reference.html",
+            "note": "Enabled does not prove access, freshness or legal authorization.",
+        },
+        "cwc": integration_status(),
+        "warning": "Disconnection or failed requests never imply an area is safe.",
+    }
+
+@app.get("/api/v1/official/imd/district-warning", tags=["sources"])
+async def imd_district_warning(
+    request: Request,
+    district_id: int = Query(ge=1, le=999999),
+):
+    if not imd_enabled():
+        raise HTTPException(status_code=503, detail="IMD API access not configured")
+    rate_limit(request, "imd_official", limit=15, window_seconds=3600)
+    try:
+        return await fetch_district_warning(district_id)
+    except Exception as exc:
+        raise HTTPException(
+            status_code=503,
+            detail="Official district bulletin could not be authenticated, parsed or verified as fresh; consult IMD directly",
+        ) from exc
 
 @app.get("/api/v1/weather/sample", tags=["weather"])
 def sample_weather():
