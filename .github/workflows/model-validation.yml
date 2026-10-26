@@ -1,0 +1,21 @@
+name: Model safety tests
+on:
+  pull_request:
+    paths:
+      - "src/civicshield/ml/**"
+      - "src/civicshield/data_processing/**"
+      - "src/civicshield/monitoring/**"
+      - "tests/test_risk.py"
+      - "tests/test_training.py"
+      - ".github/workflows/model-validation.yml"
+  workflow_dispatch:
+jobs:
+  evaluate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: python -m pip install -e ".[dev]"
+      - run: pytest -q tests/test_risk.py tests/test_training.py
