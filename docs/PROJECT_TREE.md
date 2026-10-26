@@ -63,12 +63,12 @@ CivicShield-AI/
 │   ├── __init__.py
 │   └── plot_metrics.py
 ├── tests/
-│   └── test_visualizations.py  # plus the following tests
 │   ├── conftest.py
 │   ├── test_api.py
 │   ├── test_guidance.py
 │   ├── test_risk.py
-│   └── test_training.py
+│   ├── test_training.py
+│   └── test_visualizations.py
 ├── docs/
 │   ├── API_REFERENCE.md
 │   ├── ARCHITECTURE.md
@@ -76,14 +76,14 @@ CivicShield-AI/
 │   ├── DEMO_SCRIPT.md
 │   ├── DEPLOYMENT.md
 │   ├── MODEL_CARD.md
-│   ├── VISUALIZATIONS.md
-│   ├── assets/
-│   │   └── architecture.svg
 │   ├── PROJECT_TREE.md
 │   ├── PROJECT_WORKFLOW.md
 │   ├── ROADMAP.md
 │   ├── SAFETY_AND_PRIVACY.md
-│   └── TEST_PLAN.md
+│   ├── TEST_PLAN.md
+│   ├── VISUALIZATIONS.md
+│   └── assets/
+│       └── architecture.svg
 ├── docker-compose.yml
 ├── LICENSE
 ├── Makefile
