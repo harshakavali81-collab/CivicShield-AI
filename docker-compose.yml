@@ -1,0 +1,38 @@
+services:
+  db:
+    image: postgis/postgis:16-3.4
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: civicshield
+      POSTGRES_USER: civicshield
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-local_demo_change_me}
+    volumes:
+      - civicshield_pg:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U civicshield"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+  api:
+    build:
+      context: .
+      dockerfile: backend/Dockerfile
+    ports:
+      - "127.0.0.1:8000:8000"
+    environment:
+      DATABASE_URL: postgresql+psycopg://civicshield:${POSTGRES_PASSWORD:-local_demo_change_me}@db:5432/civicshield
+      INCIDENT_SUBMISSIONS_ENABLED: ${INCIDENT_SUBMISSIONS_ENABLED:-false}
+      RESPONDER_API_KEY: ${RESPONDER_API_KEY:-}
+      CIVICSHIELD_MODEL_PATH: ""
+    depends_on:
+      db:
+        condition: service_healthy
+  web:
+    build:
+      context: frontend
+    ports:
+      - "127.0.0.1:5173:80"
+    depends_on:
+      - api
+volumes:
+  civicshield_pg:
