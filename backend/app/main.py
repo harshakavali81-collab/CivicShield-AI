@@ -5,6 +5,7 @@ from datetime import datetime, timedelta, timezone
 import hmac
 import os
 from fastapi import Depends, FastAPI, Header, HTTPException, Query, Request
+from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy import func, select, text
 from sqlalchemy.orm import Session
 from backend.app.config import responder_key, submissions_enabled
@@ -40,6 +41,21 @@ app = FastAPI(
     description="Experimental decision support ONLY. Not an official warning or dispatch system.",
     version="0.1.0",
     lifespan=lifespan,
+)
+
+# Allowed browser origins are operator-controlled; never wildcard credential access.
+def configured_cors_origins() -> list[str]:
+    configured = os.getenv("CORS_ORIGINS", "").strip()
+    if configured:
+        return [origin.strip() for origin in configured.split(",") if origin.strip()]
+    return ["http://localhost:5173", "http://127.0.0.1:5173"] if os.getenv("APP_ENV", "local") != "production" else []
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=configured_cors_origins(),
+    allow_credentials=False,
+    allow_methods=["GET", "POST", "PATCH"],
+    allow_headers=["Authorization", "Content-Type", "X-Reporter-Key", "X-Responder-Key"],
 )
 
 @app.middleware("http")

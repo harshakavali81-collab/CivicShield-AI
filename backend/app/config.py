@@ -3,7 +3,12 @@ from __future__ import annotations
 import os
 
 def database_url() -> str:
-    return os.getenv("DATABASE_URL", "sqlite:///./civicshield.db")
+    url = os.getenv("DATABASE_URL", "sqlite:///./civicshield.db")
+    if url.startswith("postgres://"):
+        return "postgresql+psycopg://" + url[len("postgres://"):]
+    if url.startswith("postgresql://"):
+        return "postgresql+psycopg://" + url[len("postgresql://"):]
+    return url
 
 def submissions_enabled() -> bool:
     return os.getenv("INCIDENT_SUBMISSIONS_ENABLED", "false").lower() == "true"

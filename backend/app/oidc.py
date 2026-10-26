@@ -72,3 +72,6 @@ def validate_production_configuration() -> None:
         raise RuntimeError("Production requires external PostgreSQL")
     if os.getenv("INCIDENT_SUBMISSIONS_ENABLED", "false").lower() == "true":
         raise RuntimeError("Public incident intake cannot be enabled by this demo's production config")
+    origins = [value.strip() for value in os.getenv("CORS_ORIGINS", "").split(",") if value.strip()]
+    if not origins or any(not item.startswith("https://") or "*" in item for item in origins):
+        raise RuntimeError("Production needs explicit HTTPS CORS_ORIGINS")
