@@ -1,3 +1,29 @@
+# CivicShield AI — final software delivery versus external operational requirements
+
+## Newly implemented engineering components (October 26, 2026)
+
+- [x] Official IMD district-warning schema adapter, original-source link, code/color decoding and strict timestamp rejection. **Enabled only with authorized live access; not connected in this account.**
+- [x] CWC official flood forecast links and explicit disconnected API status.
+- [x] RS256 OIDC JWKS/issuer/audience/expiration/role validation for restricted API routes; production startup refuses demo credentials.
+- [x] Browser OIDC Authorization Code + PKCE option for reviewer screens. Requires real IdP client registration and configuration.
+- [x] HTTPS-only production CORS configuration with separately configured allowed dashboard origin.
+- [x] Independent temporal and held-out district experimental validation reports with false-negative and Brier metrics (no training dataset provided).
+- [x] Cloud deployment configuration template (Render), backend migration installation and safe static GitHub Pages informational site / manual publishing workflow.
+- [x] Frontend official-source adapter status and explicit not-connected CWC links.
+
+## Still blocked by real-world dependencies and approvals
+
+- [ ] IMD permission/account/API integration credentials and legal rights to reuse specific warning data.
+- [ ] CWC authorized documented machine-readable data contract and subsequent integration.
+- [ ] Real, representative and legally obtained multi-region independently labeled disaster outcomes, model evaluation and independent expert certification.
+- [ ] Real hosted OIDC identity provider with MFA/roles, verified access-token claims and production secret management.
+- [ ] A paid/free cloud hosting account, chosen region/domain, configured secrets, backups, monitoring and successful deployment verification.
+- [ ] Full public privacy/security review, secure reporting infrastructure, production moderation, disaster-recovery exercise and qualified emergency authority partnership.
+
+These are **external facts and services**, not missing code that can be truthfully fabricated by an assistant.
+
+---
+
 # CivicShield AI — implementation status and remaining engineering gates
 
 **As of 2026-10-26:** runnable local research/portfolio demo. This repository is not approved for emergency-response or public disaster-warning use.

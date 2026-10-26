@@ -6,6 +6,17 @@
 
 > **SAFETY NOTICE:** This is a portfolio/research demo, **not** an official warning system, emergency service, evacuation tool, or reliable prediction of disaster safety. Risk indicators are experimental; demo samples are synthetic. Follow official authorities. During emergencies contact local emergency services.
 
+## October 2026 development upgrade
+
+**Implemented:** optional OIDC RS256 audience/issuer/role validation for responder APIs and browser Authorization Code + PKCE integration; a configured IMD district-warning adapter with strict official-code/time validation; CWC official forecast bookmarks; independent geography-and-time model holdout utility; cloud hosting blueprint; safe standalone portfolio page and GitHub Pages manual publishing workflow.
+
+**Not configured or certified:** live IMD account/permission, CWC programmatic data, a trusted IdP tenant, a public API host or a validated disaster-prediction model. All must be arranged before claiming a real emergency warning service.
+
+- [Production deployment instructions](docs/PRODUCTION_SETUP.md)
+- [Exact IMD and CWC API responsibilities](docs/IMD_CWC_INTEGRATION.md)
+- [Scientific research evaluation CLI](src/civicshield/ml/validate_external.py)
+- [Manual informational GitHub Pages workflow](.github/workflows/pages.yml)
+- [Render deployment blueprint](render.yaml)
 ## Current engineering status
 
 [![CivicShield CI](https://github.com/harshakavali81-collab/CivicShield-AI/actions/workflows/ci.yml/badge.svg)](https://github.com/harshakavali81-collab/CivicShield-AI/actions/workflows/ci.yml)

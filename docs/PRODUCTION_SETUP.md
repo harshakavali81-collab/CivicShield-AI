@@ -28,3 +28,7 @@ The input requires observed_at,district,risk_label,rainfall_24h_mm,temperature_c
 
 ## Not certified
 IMD authorization, CWC machine-feed agreement, broad labeled data, real domain validation, account provisioning, public backend deployment, backups/recovery, privacy assessment and emergency authority approval are still necessary.
+
+## Browser OIDC public-client setup
+
+Register a public OAuth/OIDC SPA client configured for Authorization Code + PKCE in the same provider that issued the API trust configuration. Set VITE_AUTH_MODE=oidc, VITE_OIDC_AUTHORITY, VITE_OIDC_CLIENT_ID and VITE_OIDC_SCOPE with a scope that produces an access token with the API audience and server-required responder role. The frontend handles the redirect and sends Bearer tokens only to restricted routes. Review provider consent, CORS, CSP, trusted domains and token storage carefully before public use; this is not a substitute for a security audit.
