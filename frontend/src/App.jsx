@@ -10,6 +10,7 @@ import { oidcConfigured, authManager, readOidcUser, loginWithOidc, logoutLocally
 import MapPanel from './MapPanel.jsx';
 import LiveWeather from './LiveWeather.jsx';
 import KnowledgeSearch from './KnowledgeSearch.jsx';
+import OfficialSources from './OfficialSources.jsx';
 
 const riskDefaults = { city: 'Hyderabad', rainfall_24h_mm: 68, temperature_c: 29, humidity_pct: 85, forecast_age_hours: 1 };
 const categories = { flooding: 'Flood / waterlogging', fallen_tree: 'Fallen tree', road_block: 'Road block', heat: 'Heat', other: 'Other' };
@@ -18,6 +19,7 @@ const nav = [
   ['dashboard', LayoutDashboard, 'Overview'],
   ['risk', CloudRain, 'Risk explorer'],
   ['weather', CloudRain, 'Modeled weather'],
+  ['official', ShieldCheck, 'Official sources'],
   ['map', MapPinned, 'Illustrative map'],
   ['assistant', MessageCircle, 'Safety guidance'],
   ['report', FileWarning, 'Report an incident'],
@@ -276,6 +278,7 @@ export default function App() {
         {tab==='dashboard'&&<Dashboard onNavigate={navigate}/>}
         {tab==='risk'&&<RiskExplorer/>}
         {tab==='weather'&&<LiveWeather/>}
+        {tab==='official'&&<OfficialSources/>}
         {tab==='map'&&<><div className="page-heading"><div><div className="eyebrow">LOCATION VIEW</div><h1>Illustrative map</h1><p>Demonstration landmarks only; not risk estimates, emergencies, or verified events.</p></div></div><Notice type="warning">Map pins are synthetic placeholders. Consult official sources for current advisories.</Notice><Card title="Hyderabad area — demonstration pins" icon={MapPinned}><div className="large-map"><MapPanel/></div></Card></>}
         {tab==='assistant'&&<><SafetyAssistant/><KnowledgeSearch/></>}
         {tab==='report'&&<ReportIncident/>}
