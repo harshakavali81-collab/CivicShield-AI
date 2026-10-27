@@ -37,7 +37,7 @@
 
 ## Visual project gallery
 
-> **Visual integrity:** These SVGs are original **concept illustrations and technical diagrams**, not screenshots of a deployed production service. No images claim real hazard predictions, operational coverage, or validated model accuracy.
+> **Visual integrity:** These SVGs are original **concept illustrations and technical diagrams**, not screenshots of a deployed production service. This is **not an official warning** platform; no images claim real hazard predictions, operational coverage, or validated model accuracy.
 
 | Application concept | Architecture and data flow |
 | :---: | :---: |
