@@ -1,5 +1,9 @@
 # Model card — CivicShield AI experimental risk indicator
 
+![Illustrated demo rainfall thresholds, not official warnings](assets/risk-thresholds.svg)
+
+*This is a visualization of the intentionally unvalidated code heuristic, not a meteorological recommendation.*
+
 ## Intended scope
 
 Education and ML system design portfolio **only**. NOT emergency, medical, insurance, evacuation or public warning decisions.

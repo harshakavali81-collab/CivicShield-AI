@@ -1,5 +1,11 @@
 # End-to-end project workflow
 
+![Illustrated human incident review workflow](assets/incident-workflow.svg)
+
+![Illustrated experimental model evaluation stages](assets/ml-evaluation-flow.svg)
+
+*Both images are process diagrams only. They do not assert real dispatch or validated forecasting.*
+
 ## A. Risk indicator workflow
 
 ~~~mermaid

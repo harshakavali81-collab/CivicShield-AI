@@ -1,5 +1,9 @@
 # Architecture and trust boundaries
 
+![Illustrated system architecture including source and identity boundaries](assets/architecture-overview.svg)
+
+*Visual architecture is a component schematic, not an endorsed government-alert implementation.*
+
 > **Scope:** research/portfolio demonstration. No live emergency alert feed or government integration.
 
 ## Component architecture

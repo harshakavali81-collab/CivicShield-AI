@@ -1,5 +1,17 @@
 # 🛡️ CivicShield AI
 
+<p align="center">
+  <img src="docs/assets/hero-banner.svg" width="100%" alt="CivicShield AI illustrated research dashboard banner. Concept artwork, not a live emergency warning service.">
+</p>
+
+<p align="center">
+  <a href="https://github.com/harshakavali81-collab/CivicShield-AI/actions/workflows/ci.yml"><img src="https://github.com/harshakavali81-collab/CivicShield-AI/actions/workflows/ci.yml/badge.svg" alt="Continuous integration status"></a>
+  <img src="https://img.shields.io/badge/Python-3.11%2B-3776AB" alt="Python 3.11 or newer">
+  <img src="https://img.shields.io/badge/Frontend-React-61DAFB" alt="React">
+  <img src="https://img.shields.io/badge/License-MIT-56C3AE" alt="MIT licensed">
+  <img src="https://img.shields.io/badge/Scope-Research%20Demo-F1AD62" alt="Research demo, not certified">
+</p>
+
 **Multilingual Public Safety, Disaster Risk Demonstration & Incident Review Platform**
 
 [Architecture](docs/ARCHITECTURE.md) · [Project tree](docs/PROJECT_TREE.md) · [Workflow](docs/PROJECT_WORKFLOW.md) · [API](docs/API_REFERENCE.md) · [Model card](docs/MODEL_CARD.md) · [Safety and privacy](docs/SAFETY_AND_PRIVACY.md) · [Testing](docs/TEST_PLAN.md) · [Visualizations](docs/VISUALIZATIONS.md) · [Deployment](docs/DEPLOYMENT.md) · [Operations](docs/OPERATIONS.md) · [Roadmap](docs/ROADMAP.md)
@@ -22,6 +34,27 @@
 [![CivicShield CI](https://github.com/harshakavali81-collab/CivicShield-AI/actions/workflows/ci.yml/badge.svg)](https://github.com/harshakavali81-collab/CivicShield-AI/actions/workflows/ci.yml)
 
 **Local development/research demo, not a deployed public emergency-warning system.** API tests, React build and initial database migration are checked by GitHub Actions. The weather explorer can fetch third-party *modeled* weather when explicitly enabled; official IMD/CWC alerts are **not connected**. No public-safety efficacy is claimed.
+
+## Visual project gallery
+
+> **Visual integrity:** These SVGs are original **concept illustrations and technical diagrams**, not screenshots of a deployed production service. No images claim real hazard predictions, operational coverage, or validated model accuracy.
+
+| Application concept | Architecture and data flow |
+| :---: | :---: |
+| [![Concept dashboard layout](docs/assets/dashboard-concept.svg)](docs/assets/dashboard-concept.svg) | [![System architecture overview](docs/assets/architecture-overview.svg)](docs/assets/architecture-overview.svg) |
+| **[Concept dashboard](docs/assets/dashboard-concept.svg)** · example interface and illustrative data | **[System architecture](docs/assets/architecture-overview.svg)** · trust boundaries and components |
+
+| Human report review | Experimental ML flow |
+| :---: | :---: |
+| [![Incident moderation workflow](docs/assets/incident-workflow.svg)](docs/assets/incident-workflow.svg) | [![Model research evaluation process](docs/assets/ml-evaluation-flow.svg)](docs/assets/ml-evaluation-flow.svg) |
+| **[Incident workflow](docs/assets/incident-workflow.svg)** · review decisions remain human | **[ML evaluation](docs/assets/ml-evaluation-flow.svg)** · no operational accuracy claims |
+
+| Source provenance | Demonstration thresholds |
+| :---: | :---: |
+| [![Official provider status and provenance](docs/assets/source-provenance.svg)](docs/assets/source-provenance.svg) | [![Illustrative rainfall groupings](docs/assets/risk-thresholds.svg)](docs/assets/risk-thresholds.svg) |
+| **[Source attribution](docs/assets/source-provenance.svg)** · disconnected ≠ safe | **[Risk thresholds](docs/assets/risk-thresholds.svg)** · not official warning levels |
+
+[Browse the complete visual gallery](docs/VISUALIZATIONS.md) · [Architecture](docs/ARCHITECTURE.md) · [Actual project tree](docs/PROJECT_TREE.md)
 
 ## Features
 
