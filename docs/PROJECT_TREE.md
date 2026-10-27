@@ -1,6 +1,6 @@
-# CivicShield AI — current GitHub folder tree
+# CivicShield AI — source tree & artwork library
 
-Automatically reconstructed from the 102 tracked files currently on main. This is the source-code layout, not certification of operational readiness.
+This inventory is generated from the **113 tracked files** in the current GitHub `main` branch. The illustrations are editable SVG images, not production screenshots.
 
 ```text
 CivicShield-AI/
@@ -40,7 +40,14 @@ CivicShield-AI/
 │   └── README.md
 ├── docs/
 │   ├── assets/
-│   │   └── architecture.svg
+│   │   ├── architecture-overview.svg
+│   │   ├── architecture.svg
+│   │   ├── dashboard-concept.svg
+│   │   ├── hero-banner.svg
+│   │   ├── incident-workflow.svg
+│   │   ├── ml-evaluation-flow.svg
+│   │   ├── risk-thresholds.svg
+│   │   └── source-provenance.svg
 │   ├── API_REFERENCE.md
 │   ├── ARCHITECTURE.md
 │   ├── DATA_SOURCES.md
@@ -82,6 +89,10 @@ CivicShield-AI/
 │   ├── plot_metrics.py
 │   └── purge_incidents.py
 ├── site/
+│   ├── assets/
+│   │   ├── architecture-overview.svg
+│   │   ├── dashboard-concept.svg
+│   │   └── hero-banner.svg
 │   └── index.html
 ├── src/
 │   └── civicshield/
@@ -123,6 +134,7 @@ CivicShield-AI/
 │   ├── test_operations.py
 │   ├── test_risk.py
 │   ├── test_training.py
+│   ├── test_visual_assets.py
 │   └── test_visualizations.py
 ├── .env.example
 ├── .gitignore
@@ -135,4 +147,17 @@ CivicShield-AI/
 └── render.yaml
 ```
 
-For explanation see [README](../README.md), [Architecture](ARCHITECTURE.md), [ML evaluation](MODEL_CARD.md), [IMD and CWC](IMD_CWC_INTEGRATION.md), [Production setup](PRODUCTION_SETUP.md), [Roadmap](ROADMAP.md).
+## Visual assets
+
+- [Hero banner](assets/hero-banner.svg)
+- [Illustrative dashboard](assets/dashboard-concept.svg)
+- [System architecture illustration](assets/architecture-overview.svg)
+- [Human incident review](assets/incident-workflow.svg)
+- [Model research pipeline](assets/ml-evaluation-flow.svg)
+- [Official-source provenance](assets/source-provenance.svg)
+- [Demo rainfall-threshold graph](assets/risk-thresholds.svg)
+- [Full visual gallery](VISUALIZATIONS.md)
+
+The `site/assets/` directory includes self-contained copies of selected illustrations used by the informational GitHub Pages website.
+
+The project **does not** provide independently validated hazard forecasts or an authorized public emergency response service. See the [roadmap](ROADMAP.md), [architecture](ARCHITECTURE.md), [safety/privacy](SAFETY_AND_PRIVACY.md) and [deployment guide](PRODUCTION_SETUP.md).
