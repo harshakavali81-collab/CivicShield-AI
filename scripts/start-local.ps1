@@ -39,7 +39,10 @@ try {
         [System.IO.File]::WriteAllText($envPath, $raw, $encoding)
         Write-Host 'Generated a private local database password. The value is not displayed.'
     } else {
-        Write-Host 'Retaining the existing nonempty local database password.'
+        if ($present.Groups[1].Value.Length -lt 24) {
+            throw 'Existing local POSTGRES_PASSWORD is too short; set a stronger private value (24+ characters) in .env.'
+        }
+        Write-Host 'Retaining the existing local database password.'
     }
     if ($PrepareOnly) {
         Write-Host 'Preparation complete. Run docker compose up --build -d when ready.'

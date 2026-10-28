@@ -1,10 +1,13 @@
-# CivicShield AI — complete tracked source tree
+# CivicShield AI — tracked repository structure
 
-Generated from the 122 tracked files on the GitHub `main` branch. The tree below is source structure, not certification of public emergency safety or official integrations.
+Generated from the **141 files** currently tracked on the GitHub `main` branch. Source structure alone does not certify a real-world emergency service.
 
 ```text
 CivicShield-AI/
 ├── .github/
+│   ├── ISSUE_TEMPLATE/
+│   │   ├── bug_report.yml
+│   │   └── feature_request.yml
 │   ├── workflows/
 │   │   ├── ci.yml
 │   │   ├── model-validation.yml
@@ -53,6 +56,7 @@ CivicShield-AI/
 │   │   └── source-provenance.svg
 │   ├── API_REFERENCE.md
 │   ├── ARCHITECTURE.md
+│   ├── CASE_STUDY.md
 │   ├── DATA_SOURCES.md
 │   ├── DEMO_SCRIPT.md
 │   ├── DEPLOYMENT.md
@@ -62,6 +66,8 @@ CivicShield-AI/
 │   ├── PRODUCTION_SETUP.md
 │   ├── PROJECT_TREE.md
 │   ├── PROJECT_WORKFLOW.md
+│   ├── QUICKSTART_WINDOWS.md
+│   ├── RELEASE_CHECKLIST.md
 │   ├── ROADMAP.md
 │   ├── SAFETY_AND_PRIVACY.md
 │   ├── TEST_PLAN.md
@@ -77,6 +83,7 @@ CivicShield-AI/
 │   │   ├── main.jsx
 │   │   ├── MapPanel.jsx
 │   │   ├── OfficialSources.jsx
+│   │   ├── ScenarioLab.jsx
 │   │   ├── styles-extra.css
 │   │   └── styles.css
 │   ├── .dockerignore
@@ -90,9 +97,12 @@ CivicShield-AI/
 │   ├── backup_sqlite.py
 │   ├── check_data_quality.py
 │   ├── collect_weather.py
+│   ├── doctor.py
 │   ├── plot_metrics.py
 │   ├── purge_incidents.py
 │   ├── smoke_demo.py
+│   ├── start-local.ps1
+│   ├── stop-local.ps1
 │   └── verify_postgis.py
 ├── site/
 │   ├── assets/
@@ -109,6 +119,9 @@ CivicShield-AI/
 │       ├── data_processing/
 │       │   ├── __init__.py
 │       │   └── features.py
+│       ├── demo/
+│       │   ├── __init__.py
+│       │   └── scenarios.py
 │       ├── incident_management/
 │       │   ├── __init__.py
 │       │   ├── geospatial.py
@@ -134,39 +147,44 @@ CivicShield-AI/
 ├── tests/
 │   ├── conftest.py
 │   ├── test_api.py
+│   ├── test_deployment_doctor.py
 │   ├── test_geospatial_search.py
 │   ├── test_guidance.py
 │   ├── test_integrations.py
 │   ├── test_new_features.py
 │   ├── test_operations.py
 │   ├── test_readiness.py
+│   ├── test_release_integrity.py
+│   ├── test_repository_hygiene.py
 │   ├── test_risk.py
+│   ├── test_scenario_lab.py
 │   ├── test_smoke_demo.py
 │   ├── test_training.py
 │   ├── test_visual_assets.py
 │   └── test_visualizations.py
+├── .dockerignore
 ├── .env.example
 ├── .gitignore
 ├── alembic.ini
+├── CHANGELOG.md
+├── CONTRIBUTING.md
 ├── docker-compose.yml
 ├── LICENSE
 ├── Makefile
 ├── pyproject.toml
 ├── README.md
-└── render.yaml
+├── render.yaml
+└── SECURITY.md
 ```
 
-## Engineering entry points
+## Highlights
 
-- [API, auth, and readiness](../backend/app/main.py)
-- [Optional indexed PostGIS spatial search](../backend/app/geo_query.py)
-- [OIDC reviewer identity and pseudonymous audits](../backend/app/oidc.py)
-- [Initial and review-audit migrations](../backend/migrations/versions/)
-- [Independent model evaluation](../src/civicshield/ml/validate_external.py)
-- [React dashboards and diagnostics](../frontend/src/)
-- [PostgreSQL/PostGIS integration CI](../.github/workflows/ci.yml)
-- [Read-only end-to-end demo smoke CLI](../scripts/smoke_demo.py)
-- [Visual gallery and diagrams](VISUALIZATIONS.md)
-- [Operations/deployment](OPERATIONS.md) · [Production setup](PRODUCTION_SETUP.md) · [Remaining dependencies](ROADMAP.md)
+- [Interactive fictional case study](CASE_STUDY.md) and [Scenario Lab React UI](../frontend/src/ScenarioLab.jsx)
+- [Windows one-click local setup](QUICKSTART_WINDOWS.md) and [configuration doctor](../scripts/doctor.py)
+- [Backend API](../backend/app/main.py), [OIDC guard](../backend/app/oidc.py) and [HMAC reviewer audit](../backend/app/reviewer_identity.py)
+- [PostGIS + SQLite geographic options](../backend/app/geo_query.py)
+- [Scientific research evaluation CLI](../src/civicshield/ml/validate_external.py)
+- [CI workflows](../.github/workflows/ci.yml) and [source visuals](VISUALIZATIONS.md)
+- [Changelog](../CHANGELOG.md), [security](../SECURITY.md), [release gates](RELEASE_CHECKLIST.md), [roadmap](ROADMAP.md)
 
-**Research only:** official IMD/CWC access, validated hazard predictions, approved emergency response, and public deployment are not implied.
+**External dependencies still outstanding:** actual authorized IMD/CWC feeds, real labeled validation data, genuine cloud/IdP credentials, independent safety approval and public emergency operations.

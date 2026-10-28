@@ -6,20 +6,20 @@ This guide works on Windows 10/11 with [Docker Desktop](https://docs.docker.com/
 
 In PowerShell:
 
-\`\`\`powershell
+```powershell
 git clone https://github.com/harshakavali81-collab/CivicShield-AI.git
 Set-Location CivicShield-AI
-\`\`\`
+```
 
 ## Start the complete local stack
 
-\`\`\`powershell
+```powershell
 .\scripts\start-local.ps1
-\`\`\`
+```
 
-The script copies \`.env.example\` into the **gitignored** \`.env\` if necessary, generates a random 48-character hexadecimal local PostgreSQL password if none is configured, preserves an existing password, starts Docker containers, and prints local links. It does not send credentials to ChatGPT, GitHub, Render or any model service.
+The script copies `.env.example` into the **gitignored** `.env` if necessary, generates a random 48-character hexadecimal local PostgreSQL password if none is configured, preserves an existing password, starts Docker containers, and prints local links. It does not send credentials to ChatGPT, GitHub, Render or any model service.
 
-If Windows restricts script execution, use a PowerShell session whose policy is authorized by your device administrator, or run the equivalent manual steps: copy \`.env.example\` to \`.env\`, set a strong \`POSTGRES_PASSWORD\`, then run \`docker compose up --build -d\`.
+If Windows restricts script execution, use a PowerShell session whose policy is authorized by your device administrator, or run the equivalent manual steps: copy `.env.example` to `.env`, set a strong `POSTGRES_PASSWORD`, then run `docker compose up --build -d`.
 
 ## Open
 
@@ -31,14 +31,14 @@ If Windows restricts script execution, use a PowerShell session whose policy is 
 
 ## Check and shut down
 
-\`\`\`powershell
+```powershell
 docker compose ps
 docker compose logs --tail=80 api
 python -m scripts.smoke_demo --url http://localhost:8000
 .\scripts\stop-local.ps1
-\`\`\`
+```
 
-Stopping containers retains the database volume. Avoid \`docker compose down -v\` or deleting local backups without an intentional data-retention decision.
+Stopping containers retains the database volume. Avoid `docker compose down -v` or deleting local backups without an intentional data-retention decision.
 
 ## Notes and limitations
 
