@@ -2,6 +2,13 @@
 
 All versions describe **software capabilities**, not certification or authorization to operate a public emergency service.
 
+## Unreleased — End-to-end integration
+
+- Added Docker Compose health-gated startup and a dedicated five-job CI pipeline.
+- Added eight read-only HTTP acceptance checks through the compiled React/Nginx reverse proxy and real PostgreSQL/PostGIS.
+- Added local-stack troubleshooting and Windows launcher readiness verification.
+- The integration check uses deliberately fictional data and cannot certify a real emergency service.
+
 ## 0.2.0 — 2026-10-28 (portfolio feature release)
 
 - Added reproducible fictional 24-hour case-study generator, REST endpoint, interactive Recharts visualizations and guided source/review/ML walkthrough.

@@ -1,6 +1,6 @@
-# CivicShield AI — tracked repository structure
+# CivicShield AI — live GitHub project tree
 
-Generated from the **141 files** currently tracked on the GitHub `main` branch. Source structure alone does not certify a real-world emergency service.
+This diagram was regenerated from **144 tracked source files** in the `main` branch. A source tree is not evidence of real emergency-service certification.
 
 ```text
 CivicShield-AI/
@@ -60,6 +60,7 @@ CivicShield-AI/
 │   ├── DATA_SOURCES.md
 │   ├── DEMO_SCRIPT.md
 │   ├── DEPLOYMENT.md
+│   ├── END_TO_END_VERIFICATION.md
 │   ├── IMD_CWC_INTEGRATION.md
 │   ├── MODEL_CARD.md
 │   ├── OPERATIONS.md
@@ -100,6 +101,7 @@ CivicShield-AI/
 │   ├── doctor.py
 │   ├── plot_metrics.py
 │   ├── purge_incidents.py
+│   ├── smoke_compose.py
 │   ├── smoke_demo.py
 │   ├── start-local.ps1
 │   ├── stop-local.ps1
@@ -147,6 +149,7 @@ CivicShield-AI/
 ├── tests/
 │   ├── conftest.py
 │   ├── test_api.py
+│   ├── test_compose_smoke.py
 │   ├── test_deployment_doctor.py
 │   ├── test_geospatial_search.py
 │   ├── test_guidance.py
@@ -177,14 +180,17 @@ CivicShield-AI/
 └── SECURITY.md
 ```
 
-## Highlights
+## Main areas
 
-- [Interactive fictional case study](CASE_STUDY.md) and [Scenario Lab React UI](../frontend/src/ScenarioLab.jsx)
-- [Windows one-click local setup](QUICKSTART_WINDOWS.md) and [configuration doctor](../scripts/doctor.py)
-- [Backend API](../backend/app/main.py), [OIDC guard](../backend/app/oidc.py) and [HMAC reviewer audit](../backend/app/reviewer_identity.py)
-- [PostGIS + SQLite geographic options](../backend/app/geo_query.py)
-- [Scientific research evaluation CLI](../src/civicshield/ml/validate_external.py)
-- [CI workflows](../.github/workflows/ci.yml) and [source visuals](VISUALIZATIONS.md)
-- [Changelog](../CHANGELOG.md), [security](../SECURITY.md), [release gates](RELEASE_CHECKLIST.md), [roadmap](ROADMAP.md)
+- [React dashboard and fictional Scenario Lab](../frontend/src/)
+- [Backend routes, health and OIDC reviewer access](../backend/app/)
+- [Pure offline case-study generator](../src/civicshield/demo/scenarios.py)
+- [Source provenance and ML experiments](../src/civicshield/)
+- [Database migrations and optional PostGIS index](../backend/migrations/)
+- [Full Docker Compose Nginx/API/database acceptance](END_TO_END_VERIFICATION.md)
+- [Static portfolio visuals](VISUALIZATIONS.md)
+- [Windows setup](QUICKSTART_WINDOWS.md)
+- [Production security and readiness checklist](PRODUCTION_SETUP.md)
+- [Official source access and scientific validation boundaries](ROADMAP.md)
 
-**External dependencies still outstanding:** actual authorized IMD/CWC feeds, real labeled validation data, genuine cloud/IdP credentials, independent safety approval and public emergency operations.
+No live government warning API is guaranteed; public operational use is not authorized.
