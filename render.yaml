@@ -36,6 +36,8 @@ services:
         sync: false
       - key: CORS_ORIGINS
         sync: false
+      - key: AUDIT_HASH_SECRET
+        generateValue: true
   - type: web
     name: civicshield-web
     runtime: static

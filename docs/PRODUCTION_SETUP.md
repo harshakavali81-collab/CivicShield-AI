@@ -32,3 +32,8 @@ IMD authorization, CWC machine-feed agreement, broad labeled data, real domain v
 ## Browser OIDC public-client setup
 
 Register a public OAuth/OIDC SPA client configured for Authorization Code + PKCE in the same provider that issued the API trust configuration. Set VITE_AUTH_MODE=oidc, VITE_OIDC_AUTHORITY, VITE_OIDC_CLIENT_ID and VITE_OIDC_SCOPE with a scope that produces an access token with the API audience and server-required responder role. The frontend handles the redirect and sends Bearer tokens only to restricted routes. Review provider consent, CORS, CSP, trusted domains and token storage carefully before public use; this is not a substitute for a security audit.
+
+
+## Pseudonymous reviewer audit identities
+
+A production installation must set a separate high-entropy `AUDIT_HASH_SECRET` with at least 32 characters, stored only in the hosting secret manager. The backend derives a stable HMAC-SHA256 reference from a verified OIDC issuer and subject without returning raw subject IDs. Local demo-key reviews remain unattributed. Changing the secret changes future actor references; document a controlled migration/retention process before rotation. HMAC alone is **not** user consent, an audit retention policy or proof that local users are properly authorized.
