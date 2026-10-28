@@ -29,6 +29,20 @@
 - [Scientific research evaluation CLI](src/civicshield/ml/validate_external.py)
 - [Manual informational GitHub Pages workflow](.github/workflows/pages.yml)
 - [Render deployment blueprint](render.yaml)
+## October 28 reliability upgrade
+
+The project now has **real PostgreSQL/PostGIS CI coverage** for schema migrations and optional indexed radius queries; portable geographic fallback for SQLite/regular PostgreSQL; pseudonymous OIDC reviewer audit records; a read-only diagnostics dashboard; explicit local database-password configuration; and a migration-aware database readiness endpoint. These are software reliability features, **not** certified emergency forecasting.
+
+Start FastAPI locally, then run the read-only portfolio smoke checks:
+
+```bash
+python -m scripts.smoke_demo --url http://localhost:8000
+```
+
+The smoke CLI confirms that synthetic values are labeled, missing official feeds remain disconnected, and stale sample risk inputs return `unavailable`. No incidents or real alerts are generated.
+
+[Full API reference](docs/API_REFERENCE.md) · [Operator and migration guide](docs/OPERATIONS.md) · [Deployment prerequisites](docs/PRODUCTION_SETUP.md)
+
 ## Current engineering status
 
 [![CivicShield CI](https://github.com/harshakavali81-collab/CivicShield-AI/actions/workflows/ci.yml/badge.svg)](https://github.com/harshakavali81-collab/CivicShield-AI/actions/workflows/ci.yml)
