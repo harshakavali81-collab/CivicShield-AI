@@ -23,3 +23,8 @@ frontend/dist/
 
 backups/
 *.sqlite3
+
+# Playwright browser test artifacts
+frontend/test-results/
+frontend/playwright-report/
+frontend/blob-report/

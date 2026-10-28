@@ -1,12 +1,13 @@
 {
   "name": "civicshield-ai-web",
   "private": true,
-  "version": "0.1.0",
+  "version": "0.2.0",
   "type": "module",
   "scripts": {
     "dev": "vite --host 0.0.0.0",
     "build": "vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "test:e2e": "playwright test"
   },
   "dependencies": {
     "leaflet": "1.9.4",
@@ -19,6 +20,7 @@
   },
   "devDependencies": {
     "@vitejs/plugin-react": "4.4.1",
-    "vite": "5.4.15"
+    "vite": "5.4.15",
+    "@playwright/test": "1.64.1"
   }
 }

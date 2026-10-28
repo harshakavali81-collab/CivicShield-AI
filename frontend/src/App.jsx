@@ -267,18 +267,31 @@ function ResponderReview() {
 export default function App() {
   const [tab,setTab] = useState('dashboard'),[mobileOpen,setMobileOpen] = useState(false);
   const ActiveIcon = nav.find(([id])=>id===tab)?.[1] || LayoutDashboard;
-  function navigate(next){setTab(next);setMobileOpen(false);window.scrollTo({top:0,behavior:'smooth'});}
+  function navigate(next){
+    setTab(next);setMobileOpen(false);
+    document.getElementById('main-content')?.focus();
+    window.scrollTo({top:0,behavior:'smooth'});
+  }
+  useEffect(() => {
+    if (!mobileOpen) return;
+    const closeOnEscape = (event) => {
+      if (event.key === 'Escape') setMobileOpen(false);
+    };
+    document.addEventListener('keydown', closeOnEscape);
+    return () => document.removeEventListener('keydown', closeOnEscape);
+  }, [mobileOpen]);
   return <div className="shell">
+    <a className="skip-link" href="#main-content">Skip to main content</a>
     <aside className={'sidebar ' + (mobileOpen ? 'sidebar-open':'')}>
       <div className="brand"><div className="brand-mark"><ShieldCheck size={25}/></div><div><b>CivicShield <span>AI</span></b><small>PUBLIC SAFETY RESEARCH</small></div><button className="close-mobile" aria-label="Close menu" onClick={()=>setMobileOpen(false)}><X size={20}/></button></div>
       <div className="nav-group-label">WORKSPACE</div>
-      <nav aria-label="Application pages">{nav.map(([id, Icon, label])=><button key={id} className={'nav-item '+(tab===id?'active':'')} onClick={()=>navigate(id)}><Icon size={19}/><span>{label}</span>{tab===id&&<ChevronRight size={15}/>}</button>)}</nav>
+      <nav id="civicshield-sidebar-nav" aria-label="Application pages">{nav.map(([id, Icon, label])=><button key={id} type="button" aria-current={tab===id?'page':undefined} className={'nav-item '+(tab===id?'active':'')} onClick={()=>navigate(id)}><Icon size={19}/><span>{label}</span>{tab===id&&<ChevronRight size={15}/>}</button>)}</nav>
       <div className="sidebar-bottom"><div className="simulation-label"><span className="pulse-dot"/> DEMONSTRATION MODE</div><p>Educational prototype<br/>No live alert connection</p><a target="_blank" rel="noopener noreferrer" href="https://github.com/harshakavali81-collab/CivicShield-AI">View source on GitHub <ChevronRight size={14}/></a></div>
     </aside>
     {mobileOpen && <button className="mobile-scrim" aria-label="Close navigation" onClick={()=>setMobileOpen(false)}/>}
     <div className="workspace">
-      <header className="topbar"><button className="mobile-toggle" aria-label="Open menu" onClick={()=>setMobileOpen(true)}><Menu size={22}/></button><div className="topbar-current"><ActiveIcon size={18}/><span>{nav.find(([id])=>id===tab)?.[2]}</span></div><div className="topbar-right"><span className="simulation-label"><span className="pulse-dot"/> NOT LIVE</span><a href="https://ndma.gov.in/" rel="noopener noreferrer" target="_blank">Official guidance <ChevronRight size={15}/></a></div></header>
-      <main id="main-content" className="main-content">
+      <header className="topbar"><button type="button" className="mobile-toggle" aria-label="Open menu" aria-expanded={mobileOpen} aria-controls="civicshield-sidebar-nav" onClick={()=>setMobileOpen(true)}><Menu size={22}/></button><div className="topbar-current"><ActiveIcon size={18}/><span>{nav.find(([id])=>id===tab)?.[2]}</span></div><div className="topbar-right"><span className="simulation-label"><span className="pulse-dot"/> NOT LIVE</span><a href="https://ndma.gov.in/" rel="noopener noreferrer" target="_blank">Official guidance <ChevronRight size={15}/></a></div></header>
+      <main id="main-content" className="main-content" tabIndex={-1}>
         {tab==='dashboard'&&<Dashboard onNavigate={navigate}/>}
         {tab==='risk'&&<RiskExplorer/>}
         {tab==='scenario'&&<ScenarioLab/>}
