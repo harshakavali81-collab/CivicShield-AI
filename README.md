@@ -49,6 +49,11 @@ The smoke CLI confirms that synthetic values are labeled, missing official feeds
 
 **Local development/research demo, not a deployed public emergency-warning system.** API tests, React build and initial database migration are checked by GitHub Actions. The weather explorer can fetch third-party *modeled* weather when explicitly enabled; official IMD/CWC alerts are **not connected**. No public-safety efficacy is claimed.
 
+## Safer bounded demo rate limiting
+
+The local API limiter no longer clears all client histories when its 5,000-key table fills. It reclaims only expired entries, preserves active quotas and returns HTTP 429 if capacity remains exhausted. Deterministic tests cover quota exhaustion, expiry, differing windows, forwarding-header spoofing and a real API endpoint.
+
+This feature **does not** substitute for a distributed security gateway or authorize a real emergency-warning service. [Implementation details and limitations](docs/RATE_LIMIT_BOUNDARIES.md).
 ## Release 0.2.0 — reproducible portfolio demo
 
 The latest upgrade includes the **interactive fictional Scenario Lab**, a production-configuration preflight checker and stronger audit pseudonym hashing. The CLI provides actionable setup blockers without leaking credentials:

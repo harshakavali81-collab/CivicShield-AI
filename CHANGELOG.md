@@ -4,6 +4,13 @@ All versions describe **software capabilities**, not certification or authorizat
 
 ## Unreleased — End-to-end integration
 
+### Bounded demo quota correctness
+
+- Fixed a rate-limit bypass where exceeding 5,000 tracked client/bucket entries cleared every active usage history.
+- Added expiry-only reclamation, 429 capacity refusal and Retry-After values while preserving original active per-client limits.
+- Added isolated capacity/concurrency-contract tests and explicit documentation that this in-process guard does not replace a distributed abuse-prevention system.
+
+
 ### OIDC security, human-review consistency and real UI capture
 
 - Restrict signing-key JWKS URLs to trusted external HTTPS origins, defaulting to the issuer's hostname; allow exceptions only through exact operator-controlled hostnames.

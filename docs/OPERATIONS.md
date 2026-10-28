@@ -21,7 +21,7 @@ Rows append to gitignored `data/raw/open_meteo_history.jsonl`; operator must ver
 - `INCIDENT_SUBMISSIONS_ENABLED=false` (default) disables incident intake.
 - `REPORTER_API_KEY` is an optional shared demo intake key. Set when enabling controlled demo reporting. UI includes a password field; keys are not stored by the browser component.
 - `RESPONDER_API_KEY` is mandatory for review, audit, geospatial report queries and operational status.
-- Per-process rate limit guards: 30 submitted reports / hour, 20 modeled-weather requests / hour, 120 knowledge searches / hour per socket peer. **Not distributed or production-ready.**
+- Per-process rate limit guards: 30 submitted reports / hour, 20 modeled-weather requests / hour, 120 knowledge searches / hour per socket peer. A bounded 5,000-key table removes only expired entries and returns 429 rather than erasing active histories at capacity. **Not distributed or production-ready.** See [rate-limit boundaries](RATE_LIMIT_BOUNDARIES.md).
 - Security headers: nosniff, no framing, no-referrer, no-store and restricted device permissions. Each API response includes a newly generated `X-Request-ID` for safe request correlation; the token is not copied from caller-supplied IDs. Do not put personal incident text, tokens, or credentials in application logs.
 - Human status changes are recorded in a local audit table (no verified actor identity).
 - `GET /api/v1/ops/status` (reviewer key): database check and configuration flags; never credentials.
