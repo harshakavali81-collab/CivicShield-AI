@@ -1,6 +1,6 @@
-# CivicShield AI — source tree & artwork library
+# CivicShield AI — complete tracked source tree
 
-This inventory is generated from the **113 tracked files** in the current GitHub `main` branch. The illustrations are editable SVG images, not production screenshots.
+Generated from the 122 tracked files on the GitHub `main` branch. The tree below is source structure, not certification of public emergency safety or official integrations.
 
 ```text
 CivicShield-AI/
@@ -20,13 +20,16 @@ CivicShield-AI/
 │   │   ├── __init__.py
 │   │   ├── config.py
 │   │   ├── db.py
+│   │   ├── geo_query.py
 │   │   ├── main.py
 │   │   ├── oidc.py
+│   │   ├── reviewer_identity.py
 │   │   ├── schemas.py
 │   │   └── security.py
 │   ├── migrations/
 │   │   ├── versions/
-│   │   │   └── 20261026_0001_initial.py
+│   │   │   ├── 20261026_0001_initial.py
+│   │   │   └── 20261028_0002_reviewer_actor.py
 │   │   ├── env.py
 │   │   ├── postgis_indexes.sql
 │   │   └── script.py.mako
@@ -68,6 +71,7 @@ CivicShield-AI/
 │   │   ├── api.js
 │   │   ├── App.jsx
 │   │   ├── auth.js
+│   │   ├── Diagnostics.jsx
 │   │   ├── KnowledgeSearch.jsx
 │   │   ├── LiveWeather.jsx
 │   │   ├── main.jsx
@@ -87,7 +91,9 @@ CivicShield-AI/
 │   ├── check_data_quality.py
 │   ├── collect_weather.py
 │   ├── plot_metrics.py
-│   └── purge_incidents.py
+│   ├── purge_incidents.py
+│   ├── smoke_demo.py
+│   └── verify_postgis.py
 ├── site/
 │   ├── assets/
 │   │   ├── architecture-overview.svg
@@ -128,11 +134,14 @@ CivicShield-AI/
 ├── tests/
 │   ├── conftest.py
 │   ├── test_api.py
+│   ├── test_geospatial_search.py
 │   ├── test_guidance.py
 │   ├── test_integrations.py
 │   ├── test_new_features.py
 │   ├── test_operations.py
+│   ├── test_readiness.py
 │   ├── test_risk.py
+│   ├── test_smoke_demo.py
 │   ├── test_training.py
 │   ├── test_visual_assets.py
 │   └── test_visualizations.py
@@ -147,17 +156,17 @@ CivicShield-AI/
 └── render.yaml
 ```
 
-## Visual assets
+## Engineering entry points
 
-- [Hero banner](assets/hero-banner.svg)
-- [Illustrative dashboard](assets/dashboard-concept.svg)
-- [System architecture illustration](assets/architecture-overview.svg)
-- [Human incident review](assets/incident-workflow.svg)
-- [Model research pipeline](assets/ml-evaluation-flow.svg)
-- [Official-source provenance](assets/source-provenance.svg)
-- [Demo rainfall-threshold graph](assets/risk-thresholds.svg)
-- [Full visual gallery](VISUALIZATIONS.md)
+- [API, auth, and readiness](../backend/app/main.py)
+- [Optional indexed PostGIS spatial search](../backend/app/geo_query.py)
+- [OIDC reviewer identity and pseudonymous audits](../backend/app/oidc.py)
+- [Initial and review-audit migrations](../backend/migrations/versions/)
+- [Independent model evaluation](../src/civicshield/ml/validate_external.py)
+- [React dashboards and diagnostics](../frontend/src/)
+- [PostgreSQL/PostGIS integration CI](../.github/workflows/ci.yml)
+- [Read-only end-to-end demo smoke CLI](../scripts/smoke_demo.py)
+- [Visual gallery and diagrams](VISUALIZATIONS.md)
+- [Operations/deployment](OPERATIONS.md) · [Production setup](PRODUCTION_SETUP.md) · [Remaining dependencies](ROADMAP.md)
 
-The `site/assets/` directory includes self-contained copies of selected illustrations used by the informational GitHub Pages website.
-
-The project **does not** provide independently validated hazard forecasts or an authorized public emergency response service. See the [roadmap](ROADMAP.md), [architecture](ARCHITECTURE.md), [safety/privacy](SAFETY_AND_PRIVACY.md) and [deployment guide](PRODUCTION_SETUP.md).
+**Research only:** official IMD/CWC access, validated hazard predictions, approved emergency response, and public deployment are not implied.
