@@ -8,6 +8,9 @@ from xml.etree import ElementTree as ET
 
 ROOT = Path(__file__).resolve().parents[1]
 SITE = ROOT / "site"
+# Direct invocation and `python -m` must both resolve project-owned modules.
+if str(ROOT) not in sys.path:
+    sys.path.insert(0, str(ROOT))
 
 class SiteParser(HTMLParser):
     def __init__(self):
