@@ -44,9 +44,14 @@ def smoke(client) -> dict:
     library.raise_for_status()
     assert library.json()["live_retrieval"] is False
 
+    scenario = client.get("/api/v1/demo/scenario")
+    scenario.raise_for_status()
+    assert scenario.json()["is_synthetic"] is True
+    assert scenario.json()["database_reports_created"] == 0
+
     return {
         "status": "software_demo_smoke_passed",
-        "checks": 7,
+        "checks": 8,
         "live_government_feed_verified": False,
         "validated_emergency_prediction": False,
         "reports_submitted": 0,

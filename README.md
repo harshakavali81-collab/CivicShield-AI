@@ -49,6 +49,12 @@ The smoke CLI confirms that synthetic values are labeled, missing official feeds
 
 **Local development/research demo, not a deployed public emergency-warning system.** API tests, React build and initial database migration are checked by GitHub Actions. The weather explorer can fetch third-party *modeled* weather when explicitly enabled; official IMD/CWC alerts are **not connected**. No public-safety efficacy is claimed.
 
+## New: Interactive fictional case study
+
+**Scenario Lab** opens instantly with 24 hours of deterministic, fully fictional values. It includes an interactive rainfall/report-count chart, four guided engineering stages, and safety/provenance checks. The endpoint is read-only and deliberately makes **no** government calls or incident database writes.
+
+[Full illustrated case study](docs/CASE_STUDY.md) · [Scenario generator](src/civicshield/demo/scenarios.py) · [React Scenario Lab](frontend/src/ScenarioLab.jsx) · [Scenario contract tests](tests/test_scenario_lab.py)
+
 ## Visual project gallery
 
 > **Visual integrity:** These SVGs are original **concept illustrations and technical diagrams**, not screenshots of a deployed production service. This is **not an official warning** platform; no images claim real hazard predictions, operational coverage, or validated model accuracy.

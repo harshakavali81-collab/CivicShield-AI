@@ -53,7 +53,7 @@ function Dashboard({ onNavigate }) {
       .then(([a, b]) => { setSummary(a); setTrends(b); }).catch(err => setError(err.message));
   }, []);
   return <>
-    <div className="page-heading"><div><div className="eyebrow">PUBLIC SAFETY INTELLIGENCE · RESEARCH DEMO</div><h1>Situation overview</h1><p>Explore experimental indicators and sample visuals. Not a real-time emergency dashboard.</p></div><button className="primary" onClick={() => onNavigate('risk')}>Explore risk <ChevronRight size={17} /></button></div>
+    <div className="page-heading"><div><div className="eyebrow">PUBLIC SAFETY INTELLIGENCE · RESEARCH DEMO</div><h1>Situation overview</h1><p>Explore experimental indicators and sample visuals. Not a real-time emergency dashboard.</p></div><button className="primary" onClick={() => onNavigate('scenario')}>Explore fictional case study <ChevronRight size={17} /></button></div>
     <Notice type="warning">No live government alert feed is connected. An empty alert list never means an area is safe.</Notice>
     {error && <Notice type="warning">Backend unavailable: {error}. Start the FastAPI server.</Notice>}
     <div className="metrics">
