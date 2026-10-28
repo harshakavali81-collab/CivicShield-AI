@@ -7,7 +7,7 @@ jobs:
   api-tests:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
@@ -30,7 +30,7 @@ jobs:
   frontend-build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - uses: actions/setup-node@v4
         with:
           node-version: "20"
@@ -60,7 +60,7 @@ jobs:
       DATABASE_URL: postgresql+psycopg://civicshield_ci:local_ci_only_password@localhost:5432/civicshield_ci
       CI_POSTGIS_TEST: "true"
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
@@ -73,7 +73,7 @@ jobs:
   container-builds:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - name: Validate Docker Compose configuration (CI-only credential)
         env:
           POSTGRES_PASSWORD: ci-only-not-for-production
@@ -91,7 +91,7 @@ jobs:
       INCIDENT_SUBMISSIONS_ENABLED: "false"
       OPEN_METEO_ENABLED: "false"
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - name: Build and start integrated DB, API, Nginx and React
         run: docker compose up -d --build --wait --wait-timeout 120
       - name: Verify all three services and Nginx-to-API proxy
@@ -132,7 +132,7 @@ jobs:
     permissions:
       contents: read
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - name: Create deterministic standalone portfolio ZIP + SHA-256
         run: python -m scripts.package_portfolio --output dist/portfolio
       - name: Publish downloadable GitHub Actions artifacts

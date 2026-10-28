@@ -13,7 +13,7 @@ jobs:
       name: github-pages
       url: ${{ steps.publish.outputs.page_url }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - name: Audit static site before publishing
         run: |
           python scripts/verify_site.py
