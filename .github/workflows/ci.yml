@@ -25,7 +25,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v7
         with:
           node-version: "20"
       - name: Install dependencies
@@ -93,7 +93,7 @@ jobs:
           docker compose ps
           python scripts/smoke_compose.py --base http://127.0.0.1:5173 --require-empty-db
       - name: Set up Node for headless browser acceptance
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v7
         with:
           node-version: "22"
       - name: Install Playwright test runner and Chromium
