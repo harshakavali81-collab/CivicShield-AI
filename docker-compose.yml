@@ -28,6 +28,12 @@ services:
       GEOSPATIAL_BACKEND: ${GEOSPATIAL_BACKEND:-portable}
       APP_ENV: local
       CIVICSHIELD_MODEL_PATH: ""
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/api/ready', timeout=3).read()"]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+      start_period: 10s
     depends_on:
       db:
         condition: service_healthy
@@ -36,7 +42,14 @@ services:
       context: frontend
     ports:
       - "127.0.0.1:5173:80"
+    healthcheck:
+      test: ["CMD-SHELL", "wget -q -O /dev/null http://127.0.0.1/"]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+      start_period: 5s
     depends_on:
-      - api
+      api:
+        condition: service_healthy
 volumes:
   civicshield_pg:

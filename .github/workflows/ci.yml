@@ -76,3 +76,25 @@ jobs:
         run: docker build -f backend/Dockerfile -t civicshield-api-ci .
       - name: Build nginx + React image
         run: docker build -f frontend/Dockerfile -t civicshield-web-ci frontend
+  full-stack-acceptance:
+    name: Docker Compose end-to-end acceptance
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    env:
+      POSTGRES_PASSWORD: github-ci-disposable-demo-password-only
+      INCIDENT_SUBMISSIONS_ENABLED: "false"
+      OPEN_METEO_ENABLED: "false"
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build and start integrated DB, API, Nginx and React
+        run: docker compose up -d --build --wait --wait-timeout 120
+      - name: Verify all three services and Nginx-to-API proxy
+        run: |
+          docker compose ps
+          python scripts/smoke_compose.py --base http://127.0.0.1:5173
+      - name: Dump service logs on failure
+        if: failure()
+        run: docker compose logs --no-color --tail=180
+      - name: Stop isolated stack and remove ephemeral DB volume
+        if: always()
+        run: docker compose down --volumes --remove-orphans
