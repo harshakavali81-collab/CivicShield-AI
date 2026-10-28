@@ -91,7 +91,7 @@ jobs:
       - name: Verify all three services and Nginx-to-API proxy
         run: |
           docker compose ps
-          python scripts/smoke_compose.py --base http://127.0.0.1:5173
+          python scripts/smoke_compose.py --base http://127.0.0.1:5173 --require-empty-db
       - name: Dump service logs on failure
         if: failure()
         run: docker compose logs --no-color --tail=180

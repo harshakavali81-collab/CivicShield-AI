@@ -12,7 +12,7 @@ GitHub Actions runs a disposable Docker Compose stack with a PostgreSQL/PostGIS 
 4. Request the compiled React HTML through Nginx, then request API endpoints **through the Nginx reverse proxy**.
 5. Confirm `/api/v1/alerts` returns an explicitly disconnected official warning feed, rather than invented warnings.
 6. Confirm the fictional scenario is deterministic, 24 hours long, and creates zero incident reports.
-7. Confirm the isolated incident DB starts empty and a stale example risk input returns `unavailable`.
+7. Confirm the incident-count response is valid and a stale example risk input returns `unavailable`. CI additionally uses `--require-empty-db` to verify the dedicated database starts empty.
 8. Confirm an arbitrary client-side route receives the React HTML shell (SPA fallback).
 9. Shut down the entire disposable test stack and **remove only its CI-only database volume**.
 
@@ -54,3 +54,8 @@ Do **not** delete your local persistent DB volume when you finish; run `docker c
 ## Automated evidence
 
 Check `.github/workflows/ci.yml` and the latest successful GitHub Actions **Docker Compose end-to-end acceptance** job. Its dedicated acceptance script is `scripts/smoke_compose.py`, which uses only the Python standard library and contains no network calls to outside official providers.
+
+
+### Existing local reports
+
+The default smoke command works even after you have submitted artificial local demo reports; it does not reset or delete them. The optional `--require-empty-db` flag should be used **only for newly created isolated CI databases**. It deliberately fails when report totals are nonzero.

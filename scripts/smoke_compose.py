@@ -25,7 +25,7 @@ def request(base: str, path: str, payload: dict | None = None):
         return response.status, response.headers.get("Content-Type", ""), body
 
 
-def check(base: str) -> dict:
+def check(base: str, require_empty_db: bool = False) -> dict:
     status, content_type, html = request(base, "/")
     assert status == 200 and "text/html" in content_type, "Nginx frontend not responding"
     assert b"CivicShield" in html and b"/assets/" in html, "Built React HTML not served"
@@ -47,7 +47,9 @@ def check(base: str) -> dict:
     assert scenario["database_reports_created"] == 0
     status, _, data = request(base, "/api/v1/analytics/summary")
     stats = json.loads(data)
-    assert status == 200 and stats["report_total"] == 0, "Isolated demo DB should be empty"
+    assert status == 200 and isinstance(stats["report_total"], int) and stats["report_total"] >= 0
+    if require_empty_db:
+        assert stats["report_total"] == 0, "Dedicated CI demo DB must start empty"
     status, _, data = request(base, "/api/v1/risk/estimate", {
         "city": "Test only", "rainfall_24h_mm": 0,
         "temperature_c": 25, "humidity_pct": 50, "forecast_age_hours": 7,
@@ -71,9 +73,10 @@ def check(base: str) -> dict:
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--base", default="http://127.0.0.1:5173")
+    parser.add_argument("--require-empty-db", action="store_true", help="Only for isolated disposable CI database")
     args = parser.parse_args()
     try:
-        result = check(args.base)
+        result = check(args.base, require_empty_db=args.require_empty_db)
     except (URLError, HTTPError, ValueError, AssertionError) as exc:
         print("Docker stack acceptance FAILED:", exc, file=sys.stderr)
         return 1
