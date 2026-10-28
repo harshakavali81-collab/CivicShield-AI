@@ -1,5 +1,13 @@
 # CivicShield AI — final software delivery versus external operational requirements
 
+## October 28, 2026 infrastructure update
+
+- [x] Database schema migration for reviewer actor references, readiness endpoint and cloud health integration.
+- [x] Index-backed PostGIS search with bounded portable fallback, distance sorting and antimeridian handling.
+- [x] Audit pseudonymous reviewer attribution from OIDC issuer/subject (demo key explicitly unattributed).
+- [x] Disposable PostgreSQL/PostGIS end-to-end migration/query test in GitHub CI.
+- [x] Docker Compose now requires explicitly configured local database password.
+
 ## Newly implemented engineering components (October 26, 2026)
 
 - [x] Official IMD district-warning schema adapter, original-source link, code/color decoding and strict timestamp rejection. **Enabled only with authorized live access; not connected in this account.**
@@ -53,7 +61,7 @@ These are **external facts and services**, not missing code that can be truthful
 - [ ] Spatial/temporal cross-validation, probability calibration, lead-time evaluation, false-negative audits, stress tests and domain approval
 - [ ] Authorized continuously updated multilingual retrieval corpus, source versioning and permission review; currently static curated summaries, not a generative RAG assistant
 - [ ] Native-speaker review of multilingual guidance and accessibility/usability field studies
-- [ ] End-to-end PostgreSQL/PostGIS optimized geospatial queries (current nearby search performs a bounded server-side scan)
+- [x] Optional indexed PostGIS geography radius search plus portable bounded-box/haversine fallback, with database integration CI. Caution: not an authoritative incident/hazard map.
 - [ ] Production MLOps monitoring, model registry, retraining governance, alert policies and rollback
 - [ ] Actual OIDC/RBAC/MFA, account identity, abuse prevention across replicas, web security review and encrypted data storage
 - [ ] Automated backup schedule, offsite encrypted backups, recovery drills, legal retention consent and deletion compliance

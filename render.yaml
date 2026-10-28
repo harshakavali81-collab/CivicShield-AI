@@ -11,7 +11,7 @@ services:
     plan: starter
     dockerfilePath: ./backend/Dockerfile
     dockerContext: .
-    healthCheckPath: /api/health
+    healthCheckPath: /api/ready
     preDeployCommand: python -m alembic upgrade head
     envVars:
       - key: APP_ENV

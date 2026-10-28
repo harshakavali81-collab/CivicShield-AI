@@ -95,6 +95,30 @@ def reviewer_incident(incident: Incident) -> dict:
 def health():
     return {"status": "ok", "mode": "research_demo", "timestamp_utc": datetime.now(timezone.utc).isoformat()}
 
+
+@app.get("/api/ready", tags=["health"])
+def readiness(db: Session = Depends(get_db)):
+    """Database and schema checks. Readiness is NOT official safety-feed availability."""
+    try:
+        db.execute(text("SELECT 1"))
+        db.execute(text("SELECT actor_ref FROM review_audit WHERE 1=0"))
+        if os.getenv("APP_ENV", "local") == "production":
+            revision = db.scalar(text("SELECT version_num FROM alembic_version"))
+            if revision != "20261028_0002":
+                raise RuntimeError("Database migrations are not at the required version")
+        if os.getenv("GEOSPATIAL_BACKEND", "portable").strip().lower() == "postgis":
+            if db.get_bind().dialect.name != "postgresql":
+                raise RuntimeError("PostGIS requires PostgreSQL")
+            if not db.scalar(text("SELECT PostGIS_Version()")):
+                raise RuntimeError("PostGIS extension missing")
+    except Exception as exc:
+        raise HTTPException(status_code=503, detail="Database/schema not ready") from exc
+    return {
+        "status": "ready", "database": "connected",
+        "official_emergency_service": False,
+        "notice": "Infrastructure readiness is not hazard, alert, or emergency readiness.",
+    }
+
 @app.get("/api/v1/sources", tags=["sources"])
 def sources():
     return {"sources": SOURCE_CATALOG, "automated_alert_ingestion": False}
