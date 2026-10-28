@@ -4,6 +4,15 @@ All versions describe **software capabilities**, not certification or authorizat
 
 ## Unreleased — End-to-end integration
 
+### Shareable portfolio and cloud template verification
+
+- Checked Render Blueprint against updated database plan identifiers, explicit cost warnings, application rewrite rules and restrictive defaults.
+- Added automated structural checks for render.yaml to catch unsafe operational changes.
+- Added reproducible self-contained static portfolio ZIP + checksum, produced as a short-lived GitHub Actions artifact.
+- **Still external:** actual provider provisioning, charges/plan approval, identity provider, real weather permissions and model validation.
+
+
+
 ### Browser and static-site quality gates
 
 - Added five Playwright Chromium tests running against the complete containerized React+FastAPI stack.

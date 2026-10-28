@@ -14,6 +14,8 @@ This report separates tested software from unverified external operational depen
 - [x] Chromium Playwright UI scenarios for desktop/mobile and keyboard interactions
 - [x] Offline GitHub Pages informational site with original SVG assets and static-site safety tests
 - [x] Deployment preflight CLI with no printed secrets
+- [x] Automated offline Render Blueprint structural checks (including paid-plan disclosure and fail-closed settings)
+- [x] GitHub Actions artifact with deterministic static portfolio ZIP and SHA-256 checksum
 - [x] Developer runbooks, model-card boundaries, data-safety rules, CI workflows, case study, diagrams
 
 The source of truth for the latest pass/fail status is [GitHub Actions](https://github.com/harshakavali81-collab/CivicShield-AI/actions). Do not claim a successful run without its commit and job results.

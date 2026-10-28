@@ -19,6 +19,8 @@ jobs:
         run: pytest -q
       - name: Audit static GitHub Pages site
         run: python scripts/verify_site.py
+      - name: Validate managed-cloud Blueprint fail-closed configuration
+        run: python -m scripts.validate_blueprint
       - name: Migration smoke test (fresh SQLite)
         run: |
           DATABASE_URL=sqlite:///./migration_ci.db alembic upgrade head
@@ -121,3 +123,22 @@ jobs:
       - name: Stop isolated stack and remove ephemeral DB volume
         if: always()
         run: docker compose down --volumes --remove-orphans
+  offline-portfolio-package:
+    name: Downloadable static portfolio archive
+    runs-on: ubuntu-latest
+    needs: [api-tests]
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - name: Create deterministic standalone portfolio ZIP + SHA-256
+        run: python -m scripts.package_portfolio --output dist/portfolio
+      - name: Publish downloadable GitHub Actions artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: civicshield-offline-portfolio-v0.2.0
+          path: |
+            dist/portfolio/*.zip
+            dist/portfolio/*.sha256
+          if-no-files-found: error
+          retention-days: 30

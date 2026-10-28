@@ -28,3 +28,6 @@ backups/
 frontend/test-results/
 frontend/playwright-report/
 frontend/blob-report/
+
+# Deterministic release/archive staging output
+dist/
