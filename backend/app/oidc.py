@@ -6,6 +6,7 @@ issue tokens, or grant anyone the responder role.
 from __future__ import annotations
 import os
 from ipaddress import ip_address
+from typing import Mapping
 from functools import lru_cache
 from urllib.parse import urlsplit
 import jwt
@@ -47,10 +48,13 @@ def _trusted_https_host(url: str, name: str) -> str:
     return host
 
 
-def _configuration() -> tuple[str, str, str]:
-    issuer = os.getenv("OIDC_ISSUER", "").rstrip("/")
-    audience = os.getenv("OIDC_AUDIENCE", "")
-    jwks_url = os.getenv("OIDC_JWKS_URL", "")
+def _configuration(config: Mapping[str, str] | None = None) -> tuple[str, str, str]:
+    # Pure optional configuration injection lets the offline deployment checker
+    # validate without mutating global environment or causing test races.
+    settings = config if config is not None else os.environ
+    issuer = settings.get("OIDC_ISSUER", "").rstrip("/")
+    audience = settings.get("OIDC_AUDIENCE", "")
+    jwks_url = settings.get("OIDC_JWKS_URL", "")
     if not issuer or not audience or not jwks_url or audience.strip() != audience:
         raise RuntimeError("OIDC issuer, audience and JWKS endpoint are required")
     issuer_host = _trusted_https_host(issuer, "OIDC_ISSUER")
@@ -60,7 +64,7 @@ def _configuration() -> tuple[str, str, str]:
     # signing keys, an operator must explicitly allow the precise hostname.
     alternate_hosts = {
         part.strip().lower()
-        for part in os.getenv("OIDC_JWKS_ALLOWED_HOSTS", "").split(",")
+        for part in settings.get("OIDC_JWKS_ALLOWED_HOSTS", "").split(",")
         if part.strip()
     }
     if any("*" in host or "/" in host or ":" in host for host in alternate_hosts):
