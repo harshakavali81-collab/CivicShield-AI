@@ -1,6 +1,6 @@
-# CivicShield AI — live GitHub project tree
+# CivicShield AI — complete current repository tree
 
-This diagram was regenerated from **144 tracked source files** in the `main` branch. A source tree is not evidence of real emergency-service certification.
+Generated from **155 tracked files** in GitHub `main`. This is an index of real project files, not evidence of public-safety certification or live hosting.
 
 ```text
 CivicShield-AI/
@@ -56,11 +56,13 @@ CivicShield-AI/
 │   │   └── source-provenance.svg
 │   ├── API_REFERENCE.md
 │   ├── ARCHITECTURE.md
+│   ├── BROWSER_ACCEPTANCE.md
 │   ├── CASE_STUDY.md
 │   ├── DATA_SOURCES.md
 │   ├── DEMO_SCRIPT.md
 │   ├── DEPLOYMENT.md
 │   ├── END_TO_END_VERIFICATION.md
+│   ├── GITHUB_PAGES_PUBLISH.md
 │   ├── IMD_CWC_INTEGRATION.md
 │   ├── MODEL_CARD.md
 │   ├── OPERATIONS.md
@@ -69,11 +71,14 @@ CivicShield-AI/
 │   ├── PROJECT_WORKFLOW.md
 │   ├── QUICKSTART_WINDOWS.md
 │   ├── RELEASE_CHECKLIST.md
+│   ├── RELEASE_STATUS.md
 │   ├── ROADMAP.md
 │   ├── SAFETY_AND_PRIVACY.md
 │   ├── TEST_PLAN.md
 │   └── VISUALIZATIONS.md
 ├── frontend/
+│   ├── e2e/
+│   │   └── portfolio.spec.js
 │   ├── src/
 │   │   ├── api.js
 │   │   ├── App.jsx
@@ -92,6 +97,7 @@ CivicShield-AI/
 │   ├── index.html
 │   ├── nginx.conf
 │   ├── package.json
+│   ├── playwright.config.js
 │   └── vite.config.js
 ├── scripts/
 │   ├── __init__.py
@@ -105,13 +111,18 @@ CivicShield-AI/
 │   ├── smoke_demo.py
 │   ├── start-local.ps1
 │   ├── stop-local.ps1
-│   └── verify_postgis.py
+│   ├── verify_postgis.py
+│   └── verify_site.py
 ├── site/
 │   ├── assets/
 │   │   ├── architecture-overview.svg
 │   │   ├── dashboard-concept.svg
-│   │   └── hero-banner.svg
-│   └── index.html
+│   │   ├── hero-banner.svg
+│   │   ├── ml-evaluation-flow.svg
+│   │   └── source-provenance.svg
+│   ├── favicon.svg
+│   ├── index.html
+│   └── robots.txt
 ├── src/
 │   └── civicshield/
 │       ├── assistant/
@@ -162,6 +173,7 @@ CivicShield-AI/
 │   ├── test_risk.py
 │   ├── test_scenario_lab.py
 │   ├── test_smoke_demo.py
+│   ├── test_static_portfolio.py
 │   ├── test_training.py
 │   ├── test_visual_assets.py
 │   └── test_visualizations.py
@@ -180,17 +192,14 @@ CivicShield-AI/
 └── SECURITY.md
 ```
 
-## Main areas
+## Essential links
 
-- [React dashboard and fictional Scenario Lab](../frontend/src/)
-- [Backend routes, health and OIDC reviewer access](../backend/app/)
-- [Pure offline case-study generator](../src/civicshield/demo/scenarios.py)
-- [Source provenance and ML experiments](../src/civicshield/)
-- [Database migrations and optional PostGIS index](../backend/migrations/)
-- [Full Docker Compose Nginx/API/database acceptance](END_TO_END_VERIFICATION.md)
-- [Static portfolio visuals](VISUALIZATIONS.md)
-- [Windows setup](QUICKSTART_WINDOWS.md)
-- [Production security and readiness checklist](PRODUCTION_SETUP.md)
-- [Official source access and scientific validation boundaries](ROADMAP.md)
+- [Full-stack engineering architecture](ARCHITECTURE.md) and [visual gallery](VISUALIZATIONS.md)
+- [React UI, keyboard navigation and Playwright tests](BROWSER_ACCEPTANCE.md)
+- [Local Docker Compose and PostgreSQL/PostGIS integration](END_TO_END_VERIFICATION.md)
+- [Interactive fabricated case study](CASE_STUDY.md)
+- [Static GitHub Pages publishing guide](GITHUB_PAGES_PUBLISH.md)
+- [Complete release status and unresolved external dependencies](RELEASE_STATUS.md)
+- [Windows quick start](QUICKSTART_WINDOWS.md) and [deployment controls](PRODUCTION_SETUP.md)
 
-No live government warning API is guaranteed; public operational use is not authorized.
+No real IMD/CWC authority, hosted identity-provider tenant, validated flood predictions, or government emergency operations are asserted.
