@@ -10,7 +10,7 @@ services:
     name: civicshield-api
     runtime: docker
     plan: starter
-    autoDeployTrigger: off
+    autoDeployTrigger: "off"
     dockerfilePath: ./backend/Dockerfile
     dockerContext: .
     healthCheckPath: /api/ready
@@ -44,7 +44,7 @@ services:
     name: civicshield-web
     runtime: static
     rootDir: frontend
-    autoDeployTrigger: off
+    autoDeployTrigger: "off"
     buildCommand: npm install --no-audit --no-fund && npm run build
     staticPublishPath: ./dist
     routes:
