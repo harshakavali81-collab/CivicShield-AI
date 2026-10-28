@@ -15,7 +15,9 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Audit static site before publishing
-        run: python scripts/verify_site.py
+        run: |
+          python scripts/verify_site.py
+          python -m scripts.export_static_demo --check
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
         with:
