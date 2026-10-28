@@ -1,6 +1,6 @@
-# CivicShield AI — complete GitHub project tree
+# CivicShield AI — tracked GitHub source tree
 
-Generated from **160 tracked source files** on the current `main` branch. All files below exist in the repository. This structure does not prove real-world hazard prediction or operational emergency-service certification.
+Regenerated directly from **166 files** on the GitHub `main` branch. This verifies the listed file names, not operational approval for live disaster monitoring.
 
 ```text
 CivicShield-AI/
@@ -79,6 +79,7 @@ CivicShield-AI/
 │   └── VISUALIZATIONS.md
 ├── frontend/
 │   ├── e2e/
+│   │   ├── offline-site.spec.js
 │   │   └── portfolio.spec.js
 │   ├── src/
 │   │   ├── api.js
@@ -106,6 +107,7 @@ CivicShield-AI/
 │   ├── check_data_quality.py
 │   ├── collect_weather.py
 │   ├── doctor.py
+│   ├── export_static_demo.py
 │   ├── package_portfolio.py
 │   ├── plot_metrics.py
 │   ├── purge_incidents.py
@@ -123,9 +125,12 @@ CivicShield-AI/
 │   │   ├── hero-banner.svg
 │   │   ├── ml-evaluation-flow.svg
 │   │   └── source-provenance.svg
+│   ├── demo.html
+│   ├── demo.js
 │   ├── favicon.svg
 │   ├── index.html
-│   └── robots.txt
+│   ├── robots.txt
+│   └── scenario-data.js
 ├── src/
 │   └── civicshield/
 │       ├── assistant/
@@ -179,6 +184,7 @@ CivicShield-AI/
 │   ├── test_scenario_lab.py
 │   ├── test_smoke_demo.py
 │   ├── test_static_portfolio.py
+│   ├── test_static_scenario.py
 │   ├── test_training.py
 │   ├── test_visual_assets.py
 │   └── test_visualizations.py
@@ -197,16 +203,16 @@ CivicShield-AI/
 └── SECURITY.md
 ```
 
-## Engineering and portfolio entry points
+## Entry points and source walkthroughs
 
-- [Project overview, how to run and visual gallery](../README.md)
-- [Case-study diagrams and research walkthrough](CASE_STUDY.md)
-- [Full local API, database, React and Nginx integration](END_TO_END_VERIFICATION.md)
-- [Chromium browser interaction and accessibility tests](BROWSER_ACCEPTANCE.md)
-- [Render cloud Blueprint guards and explicit account/cost requirements](RENDER_BLUEPRINT_GUIDE.md)
-- [Reproducible offline static portfolio ZIP generator](../scripts/package_portfolio.py)
-- [Static informational GitHub Pages deployment checklist](GITHUB_PAGES_PUBLISH.md)
-- [Source/code/release CI jobs](../.github/workflows/ci.yml)
-- [Exact remaining external dependencies](RELEASE_STATUS.md)
+- [Full project README and visual gallery](../README.md)
+- [Completely offline, interactive fictional demo](../site/demo.html)
+- [Offline visualization JavaScript and data](../site/demo.js) · [Source dataset](../site/scenario-data.js)
+- [Canonical Python scenario generator](../src/civicshield/demo/scenarios.py)
+- [Data equivalence/side-effect test](../tests/test_static_scenario.py) · [offline browser tests](../frontend/e2e/offline-site.spec.js)
+- [Full React dashboard and API integration tests](END_TO_END_VERIFICATION.md)
+- [Portable demo packaging and checksums](../scripts/package_portfolio.py)
+- [Source provenance, ML research and ethics](CASE_STUDY.md) · [model card](MODEL_CARD.md)
+- [Deployment requirements and exact external blockers](RELEASE_STATUS.md) · [GitHub Pages publishing](GITHUB_PAGES_PUBLISH.md)
 
-**Scope notice:** Cloud hosting, real identity providers, official IMD/CWC permissions and independently certified disaster prediction remain outside this verified code release.
+The offline case study has **no** real events, live official warnings, or government emergency dispatch. These require independent authorization and domain-specific review.
