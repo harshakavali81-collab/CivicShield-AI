@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="description" content="Offline CivicShield AI fictional interactive case study. All data invented. Not an emergency service.">
+<meta name="color-scheme" content="dark">
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
+<title>Fictional Scenario Lab · CivicShield AI</title>
+<style>
+:root{font-family:system-ui,-apple-system,"Segoe UI",sans-serif;background:#091427;color:#ecf5ff;color-scheme:dark}
+*{box-sizing:border-box}body{margin:0;line-height:1.55}a{color:#abdcff}button,input{font:inherit}
+.skip{position:absolute;left:15px;top:-100px;z-index:20;padding:12px;background:white;color:#12243a;border-radius:8px}.skip:focus{top:10px}
+a:focus-visible,button:focus-visible,input:focus-visible,summary:focus-visible{outline:3px solid #7edbff;outline-offset:4px}
+header,main,footer{width:min(1220px,100% - 40px);margin:auto}
+header{display:flex;align-items:center;justify-content:space-between;gap:18px;padding:26px 0;border-bottom:1px solid #2c4562;flex-wrap:wrap}
+.brand{font-weight:850;letter-spacing:-.4px;font-size:21px}.brand span,.accent{color:#75baff}nav{display:flex;gap:20px;flex-wrap:wrap;font-size:13px}
+main{padding:57px 0 90px}
+.eyebrow{color:#83bdf2;text-transform:uppercase;font-size:11px;font-weight:850;letter-spacing:2px}
+h1{font-size:clamp(34px,5vw,66px);line-height:1.13;max-width:920px;margin:14px 0 20px;letter-spacing:-2px}
+.lead{color:#b2c9df;font-size:16px;max-width:760px}
+.notice{background:#312719;border:1px solid #a77b38;color:#ffe1a6;border-radius:13px;padding:17px 20px;font-size:14px;max-width:1100px;margin:28px 0}
+.stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px;margin:30px 0}
+.stat,.panel{background:#132440;border:1px solid #2e4769;border-radius:14px}
+.stat{padding:23px;min-width:0}.stat small{display:block;font-size:11px;color:#a2b9d4}.stat strong{font-size:clamp(21px,3vw,33px);display:block;margin:9px 0;font-variant-numeric:tabular-nums}
+.stat em{font-style:normal;font-size:11px;color:#c1d0e0}
+.layout{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(320px,1fr);gap:18px;align-items:start}
+.panel{padding:24px;min-width:0}.panel h2{font-size:22px;margin:0 0 4px}.sub{font-size:12px;color:#9fb8d2;margin:0 0 22px}
+.legend{display:flex;gap:18px;flex-wrap:wrap;color:#abc7e4;font-size:12px;margin:10px 0}.legend span:before{content:"";display:inline-block;width:13px;height:6px;border-radius:3px;vertical-align:middle;margin-right:7px}.legend .rain:before{background:#61b8fa}.legend .reports:before{background:#f3b06c}
+.figure{border:1px solid #2b496b;border-radius:10px;background:#0b1a30;overflow:hidden;padding:10px}
+#chart{width:100%;height:auto;display:block}
+input[type="range"]{display:block;width:100%;accent-color:#78b9ff;margin:20px 0 12px}
+.hour-info{display:flex;align-items:center;justify-content:space-between;gap:15px;flex-wrap:wrap;padding:14px;background:#1b3252;border-radius:10px;font-size:12px}
+.hour-info strong{font-size:17px;font-variant-numeric:tabular-nums}
+.stage-buttons{display:grid;gap:9px;margin:17px 0}
+.stage{background:#1d3655;color:#e1ecf8;border:1px solid #426185;text-align:left;padding:13px 16px;border-radius:9px;cursor:pointer;font-size:13px;font-weight:650}
+.stage:hover,.stage[aria-pressed="true"]{background:#285da1;border-color:#85c4f8}
+#stage-details{background:#0e213b;border-radius:11px;padding:20px;min-height:220px}
+#stage-details h3{margin:9px 0;font-size:17px}
+#stage-details p{font-size:13px;color:#c0d1e4;line-height:1.8}
+#takeaway{font-weight:700;color:#f7d299!important}
+.pill{font-size:10px;letter-spacing:1px;color:#9ac9ec;text-transform:uppercase;font-weight:850}
+.links{display:flex;gap:12px;flex-wrap:wrap;margin:25px 0}.cta{display:inline-block;padding:13px 18px;background:#3476da;border-radius:9px;color:#fff;text-decoration:none;font-size:13px;font-weight:750}.cta.alt{background:#213958;border:1px solid #45648a}
+details{margin-top:20px;background:#0c2038;border:1px solid #365475;border-radius:12px;padding:16px}
+summary{cursor:pointer;font-weight:700}table{width:100%;border-collapse:collapse;margin:16px 0;font-size:12px;text-align:left}
+td,th{border-bottom:1px solid #294566;padding:9px 13px}th{color:#abd4ff}
+.table-scroll{overflow-x:auto}
+footer{border-top:1px solid #284262;color:#95b2ce;font-size:12px;padding:25px 0 34px}
+@media(max-width:850px){.stats{grid-template-columns:repeat(2,minmax(0,1fr))}.layout{grid-template-columns:1fr}}
+@media(max-width:500px){header,main,footer{width:calc(100% - 28px)}.stats{gap:9px}.stat{padding:14px}.panel{padding:16px}.stat strong{font-size:21px}h1{letter-spacing:-1px}}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
+</style>
+<script src="scenario-data.js" defer></script>
+<script src="demo.js" defer></script>
+</head>
+<body>
+<a class="skip" href="#main-content">Skip to case study</a>
+<header><div class="brand">🛡 CivicShield <span>AI</span> <span class="pill">/ Offline demo</span></div>
+<nav aria-label="Portfolio navigation"><a href="index.html">Portfolio home</a><a href="https://github.com/harshakavali81-collab/CivicShield-AI/blob/main/docs/CASE_STUDY.md">Source walkthrough</a><a href="https://mausam.imd.gov.in/">Original IMD advisories</a></nav></header>
+<main id="main-content">
+<span class="eyebrow">Interactive portfolio · 100% fictional · no network calls</span>
+<h1>Explore a <span class="accent">fictional monsoon</span> software exercise</h1>
+<p class="lead">A reproducible 24-hour data story that demonstrates charting, provenance, source freshness checks, human review and model governance. It works directly from an extracted ZIP without Python, database, or internet access.</p>
+<div class="notice" role="note"><strong>FICTIONAL SOFTWARE DEMO ONLY — NOT AN EMERGENCY SERVICE.</strong> Rainfall and report counts are invented. No monitoring, forecasts, official warnings, rescue dispatch, or evacuation decisions are provided.</div>
+<div class="stats">
+<div class="stat"><small>Fictional exercise</small><strong id="metric-hours">24 h</strong><em>Not real time</em></div>
+<div class="stat"><small>Invented rainfall total</small><strong id="metric-rain">—</strong><em>Not an observation</em></div>
+<div class="stat"><small>Invented report total</small><strong id="metric-reports">—</strong><em>Not stored as incidents</em></div>
+<div class="stat"><small>Official source connection</small><strong>None</strong><em>Unknown does not mean safe</em></div>
+</div>
+<div class="layout">
+<section class="panel" aria-labelledby="timeline-heading">
+<h2 id="timeline-heading">24-hour fictional timeline</h2><p class="sub">Original source: deterministic Python sample arrays. Blue line: invented rain (mm/hour). Amber columns: invented report count.</p>
+<div class="legend" aria-hidden="true"><span class="rain">Invented rain (mm/h)</span><span class="reports">Invented report count</span></div>
+<div class="figure"><svg id="chart" viewBox="0 0 810 300" role="img" aria-label="Fictional hourly rainfall and report counts, shown as line and bars. Accessible values are in the table below."></svg></div>
+<label for="hour-slider">Explore fictional hour <strong id="hour-label">00:00 UTC</strong></label>
+<input id="hour-slider" type="range" min="0" max="23" step="1" value="14">
+<div class="hour-info" aria-live="polite"><span>Invented hour <strong id="selected-hour">14:00</strong></span><span>Rain <strong id="selected-rain">—</strong></span><span>Reports <strong id="selected-reports">—</strong></span></div>
+<details><summary>Accessible complete data table (24 fictional hours)</summary><div class="table-scroll"><table><caption>All figures are fabricated for a software demo.</caption><thead><tr><th scope="col">Hour (UTC)</th><th scope="col">Invented rain (mm/h)</th><th scope="col">Invented reports</th></tr></thead><tbody id="data-rows"></tbody></table></div></details>
+</section>
+<section class="panel" aria-labelledby="walkthrough-heading">
+<h2 id="walkthrough-heading">Engineering walkthrough</h2><p class="sub">Choose one of four working design stages.</p>
+<div id="stages" class="stage-buttons" role="group" aria-label="Engineering case study stages"></div>
+<div id="stage-details" aria-live="polite">
+<span class="pill" id="stage-time">Hour 0</span>
+<h3 id="stage-title">Source validation</h3>
+<p id="stage-explanation">Select a chapter to explore its technical rationale.</p>
+<p id="takeaway"></p>
+</div>
+</section>
+</div>
+<div class="links"><a class="cta" href="index.html">Back to the portfolio</a><a class="cta alt" href="https://github.com/harshakavali81-collab/CivicShield-AI">Explore full-stack source</a></div>
+<p class="lead">The full React/FastAPI application is available for local development, but this static case study deliberately requires no cloud hosting account or official API credentials. It includes no real user reports or private location data.</p>
+</main>
+<footer>CivicShield AI · Educational AI/ML engineering portfolio · Fictional case study, not government certified</footer>
+</body></html>
