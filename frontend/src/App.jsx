@@ -11,6 +11,7 @@ import MapPanel from './MapPanel.jsx';
 import LiveWeather from './LiveWeather.jsx';
 import KnowledgeSearch from './KnowledgeSearch.jsx';
 import OfficialSources from './OfficialSources.jsx';
+import Diagnostics from './Diagnostics.jsx';
 
 const riskDefaults = { city: 'Hyderabad', rainfall_24h_mm: 68, temperature_c: 29, humidity_pct: 85, forecast_age_hours: 1 };
 const categories = { flooding: 'Flood / waterlogging', fallen_tree: 'Fallen tree', road_block: 'Road block', heat: 'Heat', other: 'Other' };
@@ -24,6 +25,7 @@ const nav = [
   ['assistant', MessageCircle, 'Safety guidance'],
   ['report', FileWarning, 'Report an incident'],
   ['review', ShieldCheck, 'Responder review'],
+  ['diagnostics', Activity, 'System diagnostics'],
 ];
 
 function Notice({ type = 'info', children }) { return <div className={'notice notice-' + type}><AlertTriangle size={17} /> <span>{children}</span></div>; }
@@ -235,7 +237,7 @@ function ResponderReview() {
         <div className="actions">{['verified','dismissed','needs_info'].map(status=><button className="secondary small" key={status} onClick={()=>review(report.id,status)}>{status.replace('_',' ')}</button>)}</div>
       </div>)}</div>}
     </Card>
-    <Card title="Geographic report filtering" subtitle="Restricted location filtering — unverified reports, not rescue routes" icon={MapPinned}>
+    <Card title="Geographic report filtering" subtitle="Restricted geographic radius search — unverified reports, not rescue routes" icon={MapPinned}>
       <div className="form-grid">
         <label>Latitude<input type="number" min="-90" max="90" step="any" value={geo.latitude} onChange={e=>setGeo({...geo,latitude:e.target.value})}/></label>
         <label>Longitude<input type="number" min="-180" max="180" step="any" value={geo.longitude} onChange={e=>setGeo({...geo,longitude:e.target.value})}/></label>
@@ -243,7 +245,7 @@ function ResponderReview() {
         <div className="actions"><button className="secondary" onClick={searchNearby} disabled={oidcConfigured ? !accessToken : !key}>Find nearby reports</button></div>
       </div>
       {geoResults && <div className="report-list" style={{marginTop:15}}>
-        <p className="muted">{geoResults.total_matches_in_scan} matching local reports. Results limited to 100; search is not authoritative or complete.</p>
+        <p className="muted">{geoResults.total_matches_in_scan} matching local reports. Results limited to 100; search is not authoritative. {geoResults.possibly_incomplete ? "The result set was truncated." : "No truncation detected."} Backend: {geoResults.search_backend}.</p>
         {geoResults.incidents.map(r=><div className="report" key={r.id}>
           <b>{r.title}</b><p>{r.city} · {r.distance_km} km · {r.status}</p>
         </div>)}
@@ -279,6 +281,7 @@ export default function App() {
         {tab==='risk'&&<RiskExplorer/>}
         {tab==='weather'&&<LiveWeather/>}
         {tab==='official'&&<OfficialSources/>}
+        {tab==='diagnostics'&&<Diagnostics/>}
         {tab==='map'&&<><div className="page-heading"><div><div className="eyebrow">LOCATION VIEW</div><h1>Illustrative map</h1><p>Demonstration landmarks only; not risk estimates, emergencies, or verified events.</p></div></div><Notice type="warning">Map pins are synthetic placeholders. Consult official sources for current advisories.</Notice><Card title="Hyderabad area — demonstration pins" icon={MapPinned}><div className="large-map"><MapPanel/></div></Card></>}
         {tab==='assistant'&&<><SafetyAssistant/><KnowledgeSearch/></>}
         {tab==='report'&&<ReportIncident/>}
