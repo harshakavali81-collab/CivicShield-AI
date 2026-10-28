@@ -10,6 +10,9 @@ GitHub Actions should verify:
 - [ ] Real PostgreSQL/PostGIS migration and isolated radius-query smoke test
 - [ ] React production build
 - [ ] Backend and frontend Docker builds, Compose validation
+- [ ] Integrated live Docker Compose HTTP acceptance of all three services
+- [ ] Chromium UI tests (desktop navigation, responsive/mobile, keyboard, disconnected source and stale-input behavior)
+- [ ] Static informational site asset/SVG checker before optional Pages deployment
 
 Use [Actions](https://github.com/harshakavali81-collab/CivicShield-AI/actions) to confirm exact run status before claiming a release passed.
 

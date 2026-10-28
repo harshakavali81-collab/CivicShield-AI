@@ -4,6 +4,15 @@ All versions describe **software capabilities**, not certification or authorizat
 
 ## Unreleased — End-to-end integration
 
+### Browser and static-site quality gates
+
+- Added five Playwright Chromium tests running against the complete containerized React+FastAPI stack.
+- Added desktop/mobile keyboard navigation, skip links, active-page descriptions and reduced-motion support.
+- Finished static GitHub Pages portfolio assets and added automated SVG integrity/accessibility checks before publishing.
+- Added factual release status and owner publishing instructions. **No production service or public URL is implied.**
+
+
+
 - Added Docker Compose health-gated startup and a dedicated five-job CI pipeline.
 - Added eight read-only HTTP acceptance checks through the compiled React/Nginx reverse proxy and real PostgreSQL/PostGIS.
 - Added local-stack troubleshooting and Windows launcher readiness verification.

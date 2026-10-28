@@ -96,6 +96,16 @@ For the interview-ready walkthrough, see the [Case study](docs/CASE_STUDY.md), [
 - **Developer quality:** FastAPI, SQLAlchemy (SQLite local / PostgreSQL for Docker), Alembic initial migration, controlled backups/purge, tests, Docker Compose, CI, architecture diagrams, docs, local experiment graph generator.
 - **Safety:** no invented government alerts, no personal phone collection, no public disclosure of exact incident coordinates or narratives, reviewer audit log and optional reporter key. No distributed RBAC/anti-abuse claims.
 
+## Browser-tested portfolio release
+
+The full Docker stack is now tested through **Playwright Chromium**, including the Scenario Lab, risk freshness failure, disconnected official-source status, mobile Escape-to-close and keyboard skip navigation. The standalone GitHub Pages portfolio now has additional SVG illustrations and automated link/asset checks.
+
+- [Browser test walkthrough](docs/BROWSER_ACCEPTANCE.md)
+- [Factual delivery and outstanding dependencies](docs/RELEASE_STATUS.md)
+- [Static Pages publishing instructions](docs/GITHUB_PAGES_PUBLISH.md)
+
+Run `npm run test:e2e` inside `frontend/` after starting the local Docker Compose application. A green browser test establishes user-interface functionality only, not real hazard-monitoring capability.
+
 ## End-to-end local stack verification
 
 The CI pipeline now tests the actual PostgreSQL/PostGIS → FastAPI → Nginx/React stack. Health-gated Compose startup, a read-only HTTP acceptance script, and teardown provide a reproducible way to prove the app serves the UI and API together.
