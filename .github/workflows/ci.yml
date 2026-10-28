@@ -64,3 +64,15 @@ jobs:
         run: alembic upgrade head
       - name: Exercise PostGIS geography index and search
         run: python -m scripts.verify_postgis
+  container-builds:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate Docker Compose configuration (CI-only credential)
+        env:
+          POSTGRES_PASSWORD: ci-only-not-for-production
+        run: docker compose config --quiet
+      - name: Build Python API image including migration assets
+        run: docker build -f backend/Dockerfile -t civicshield-api-ci .
+      - name: Build nginx + React image
+        run: docker build -f frontend/Dockerfile -t civicshield-web-ci frontend

@@ -23,7 +23,7 @@ npm run dev
 
 Dashboard http://localhost:5173 ; Swagger http://localhost:8000/docs .
 
-By default the simulated risk endpoint works offline. The separate real third-party modeled weather tab requires setting \`OPEN_METEO_ENABLED=true\` in the environment **before** starting the API.
+By default the simulated risk endpoint works offline. The separate real third-party modeled weather tab requires setting `OPEN_METEO_ENABLED=true` in the environment **before** starting the API.
 
 ## Docker local development
 
@@ -34,15 +34,15 @@ cp .env.example .env
 docker compose up --build
 ~~~
 
-Docker publishes the API and UI to \`127.0.0.1\` only. \`.env\` is gitignored. Do not enable report submissions without a privacy review and local access key.
+Docker publishes the API and UI to `127.0.0.1` only. `.env` is gitignored. Do not enable report submissions without a privacy review and local access key.
 
-Set \`INCIDENT_SUBMISSIONS_ENABLED=true\`, \`REPORTER_API_KEY\`, and \`RESPONDER_API_KEY\` to exercise the demo intake/review flow. Do not distribute these keys or place them in an HTML bundle.
+Set `INCIDENT_SUBMISSIONS_ENABLED=true`, `REPORTER_API_KEY`, and `RESPONDER_API_KEY` to exercise the demo intake/review flow. Do not distribute these keys or place them in an HTML bundle.
 
 ## Database maintenance
 
-On a **new, empty** database only: \`alembic upgrade head\` after installing the \`migrations\` optional dependency. Existing databases initialized by API \`create_all\` require careful schema reconciliation before stamping or migration.
+On a **new, empty** database only: `alembic upgrade head` after installing the `migrations` optional dependency. Existing databases initialized by API `create_all` require careful schema reconciliation before stamping or migration.
 
-\`python -m scripts.backup_sqlite\` supports local SQLite only. PostgreSQL requires \`pg_dump\` and tested restore procedures.
+`python -m scripts.backup_sqlite` supports local SQLite only. PostgreSQL requires `pg_dump` and tested restore procedures.
 
 ## Model training and graphs
 
@@ -56,3 +56,8 @@ The training file must be independently labeled and legally sourced; no genuine 
 ## Production blockers
 
 Missing public-trust infrastructure: secure identity/roles, rate limiting, moderation, encryption, TLS, official alert verification, actual validated hazard models, geospatial query optimization, safe human operational workflow and 24/7 monitoring. Never advertise this demo as a working emergency-warning service.
+
+
+## Container-build verification
+
+The backend Docker image now includes `alembic.ini` and revision files required by the cloud pre-deploy migration command. CI builds **both** Docker images and validates Docker Compose configuration with a disposable CI-only password. This is a reproducible build check, **not** proof that a production domain, identity provider, data feed or public emergency service is operational.
