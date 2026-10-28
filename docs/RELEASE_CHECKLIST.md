@@ -17,7 +17,7 @@ Use [Actions](https://github.com/harshakavali81-collab/CivicShield-AI/actions) t
 
 - [ ] README hero, original SVG gallery, architecture and project tree render properly
 - [ ] Scenario Lab says **FICTIONAL** and contains no fabricated official performance scores
-- [ ] \`python -m scripts.smoke_demo\` returns read-only software checks
+- [ ] `python -m scripts.smoke_demo` returns read-only software checks
 - [ ] Source links resolve to original IMD, CWC and NDMA homepages
 - [ ] Public demo does not expose raw report narratives, identities or exact home locations
 - [ ] Local environment secrets and private files are not in Git history

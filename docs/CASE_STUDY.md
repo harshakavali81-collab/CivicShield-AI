@@ -10,7 +10,7 @@ A portfolio-level public-safety software prototype must demonstrate architecture
 
 ## Architecture of this exercise
 
-\`\`\`mermaid
+```mermaid
 flowchart LR
     A[Fixed fictional hourly arrays] --> B[Pure deterministic Python generator]
     B --> C[Read-only FastAPI endpoint]
@@ -20,15 +20,15 @@ flowchart LR
     C --> G[Contract and safety tests]
     H[Live government feeds] -. NOT USED .-> B
     I[Incident database] -. NO WRITES .-> B
-\`\`\`
+```
 
 ## Implementation
 
-- **Source**: \`src/civicshield/demo/scenarios.py\` (fixed, deterministic 24-hour arrays).
-- **API endpoint**: \`GET /api/v1/demo/scenario\`, no external calls or database writes.
-- **Frontend**: \`frontend/src/ScenarioLab.jsx\` with React state and Recharts.
-- **API safety metadata**: \`source_type=synthetic_portfolio_exercise\`, \`is_synthetic=true\`, \`is_official_warning=false\`, \`official_data_connected=false\`, \`real_hazard_predictions=false\`.
-- **Tests**: \`tests/test_scenario_lab.py\` verifies reproducibility, labels, sample integrity, no audit/incident writes, and no official-advisory claims.
+- **Source**: `src/civicshield/demo/scenarios.py` (fixed, deterministic 24-hour arrays).
+- **API endpoint**: `GET /api/v1/demo/scenario`, no external calls or database writes.
+- **Frontend**: `frontend/src/ScenarioLab.jsx` with React state and Recharts.
+- **API safety metadata**: `source_type=synthetic_portfolio_exercise`, `is_synthetic=true`, `is_official_warning=false`, `official_data_connected=false`, `real_hazard_predictions=false`.
+- **Tests**: `tests/test_scenario_lab.py` verifies reproducibility, labels, sample integrity, no audit/incident writes, and no official-advisory claims.
 
 ## Four reproducible software stages
 
@@ -39,14 +39,14 @@ flowchart LR
 
 ## Example commands
 
-\`\`\`bash
+```bash
 python -c "from civicshield.demo.scenarios import build_scenario; s=build_scenario(); print(s['summary'])"
 uvicorn backend.app.main:app --reload
 python -m scripts.smoke_demo --url http://localhost:8000
 pytest -q tests/test_scenario_lab.py
-\`\`\`
+```
 
-Launch the frontend using \`cd frontend && npm install && npm run dev\`, then choose **Scenario lab**.
+Launch the frontend using `cd frontend && npm install && npm run dev`, then choose **Scenario lab**.
 
 ## Engineering talking points for interviews
 

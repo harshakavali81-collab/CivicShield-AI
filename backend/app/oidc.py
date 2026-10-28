@@ -6,7 +6,7 @@ issue tokens, or grant anyone the responder role.
 from __future__ import annotations
 import os
 from functools import lru_cache
-from urllib.parse import urlparse
+from urllib.parse import urlparse, urlsplit
 import jwt
 from fastapi import HTTPException, Request
 from jwt import PyJWKClient
@@ -76,5 +76,19 @@ def validate_production_configuration() -> None:
     if len(audit_secret) < 32:
         raise RuntimeError("Production AUDIT_HASH_SECRET must have at least 32 characters")
     origins = [value.strip() for value in os.getenv("CORS_ORIGINS", "").split(",") if value.strip()]
-    if not origins or any(not item.startswith("https://") or "*" in item for item in origins):
+    for origin in origins:
+        if "*" in origin:
+            raise RuntimeError("Production needs explicit HTTPS CORS_ORIGINS")
+        try:
+            parsed = urlsplit(origin)
+            acceptable = (
+                parsed.scheme == "https" and bool(parsed.hostname)
+                and not parsed.username and not parsed.password
+                and parsed.path in ("", "/") and not parsed.query and not parsed.fragment
+            )
+        except ValueError:
+            acceptable = False
+        if not acceptable:
+            raise RuntimeError("Production needs explicit HTTPS CORS_ORIGINS")
+    if not origins:
         raise RuntimeError("Production needs explicit HTTPS CORS_ORIGINS")

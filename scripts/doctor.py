@@ -33,6 +33,13 @@ def _https_host(url: str) -> bool:
             u.hostname not in ("localhost", "127.0.0.1") and
             not u.username and not u.password and not u.fragment)
 
+def _https_origin(url: str) -> bool:
+    try:
+        u = urlsplit(url)
+    except ValueError:
+        return False
+    return (_https_host(url) and u.path in ("", "/") and not u.query)
+
 def evaluate(mode: str = "local", env: dict | None = None, executable=shutil.which) -> dict:
     if mode not in ("local", "production"):
         raise ValueError("mode must be 'local' or 'production'")
@@ -74,7 +81,7 @@ def evaluate(mode: str = "local", env: dict | None = None, executable=shutil.whi
         if not config.get("OIDC_AUDIENCE"):
             failures.append("OIDC_AUDIENCE is missing.")
         origins = [o.strip() for o in config.get("CORS_ORIGINS", "").split(",") if o.strip()]
-        if not origins or not all(_https_host(o) and "*" not in o for o in origins):
+        if not origins or not all(_https_origin(o) and "*" not in o for o in origins):
             failures.append("CORS_ORIGINS must list explicit external HTTPS origins.")
         if len(config.get("AUDIT_HASH_SECRET", "")) < 32:
             failures.append("AUDIT_HASH_SECRET must contain at least 32 private characters.")

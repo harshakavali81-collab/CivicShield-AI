@@ -4,16 +4,16 @@ Contributions are welcome for **educational and non-operational** software impro
 
 ## Local developer setup
 
-\`\`\`bash
+```bash
 git clone https://github.com/harshakavali81-collab/CivicShield-AI.git
 cd CivicShield-AI
 python -m venv .venv
 python -m pip install -e ".[dev,migrations]"
 pytest -q
 python -m scripts.doctor --mode local
-\`\`\`
+```
 
-Frontend: \`cd frontend && npm install && npm run build\`. For API integration: start \`uvicorn backend.app.main:app --reload\`, then \`python -m scripts.smoke_demo\`.
+Frontend: `cd frontend && npm install && npm run build`. For API integration: start `uvicorn backend.app.main:app --reload`, then `python -m scripts.smoke_demo`.
 
 ## Pull request quality requirements
 
