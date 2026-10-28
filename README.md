@@ -66,6 +66,12 @@ For the interview-ready walkthrough, see the [Case study](docs/CASE_STUDY.md), [
 
 [Full illustrated case study](docs/CASE_STUDY.md) · [Scenario generator](src/civicshield/demo/scenarios.py) · [React Scenario Lab](frontend/src/ScenarioLab.jsx) · [Scenario contract tests](tests/test_scenario_lab.py)
 
+## Browser-captured screenshots from the actual app
+
+In addition to original conceptual SVG diagrams, successful CI runs generate **four real Chromium screenshots** of the running React application (desktop, fictional chart, official-source disconnection screen and mobile). They are downloadable under the Actions artifact `civicshield-tested-ui-screenshots`. Screenshots are captured from a disposable synthetic-data environment and never presented as production service evidence.
+
+[How to view the screenshots](docs/SCREENSHOT_SHOWCASE.md)
+
 ## Visual project gallery
 
 > **Visual integrity:** These SVGs are original **concept illustrations and technical diagrams**, not screenshots of a deployed production service. This is **not an official warning** platform; no images claim real hazard predictions, operational coverage, or validated model accuracy.

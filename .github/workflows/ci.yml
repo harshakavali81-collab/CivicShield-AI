@@ -112,6 +112,14 @@ jobs:
         env:
           E2E_BASE_URL: http://127.0.0.1:5173
         run: npm run test:e2e
+      - name: Upload real browser screenshots of the fictional portfolio
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: civicshield-tested-ui-screenshots
+          path: frontend/test-results/showcase/*.png
+          if-no-files-found: ignore
+          retention-days: 30
       - name: Upload browser failure screenshots and traces
         if: failure()
         uses: actions/upload-artifact@v4
