@@ -14,6 +14,8 @@ jobs:
       url: ${{ steps.publish.outputs.page_url }}
     steps:
       - uses: actions/checkout@v4
+      - name: Audit static site before publishing
+        run: python scripts/verify_site.py
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
         with:
