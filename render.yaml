@@ -3,12 +3,14 @@ databases:
   - name: civicshield-db
     databaseName: civicshield
     user: civicshield
-    plan: basic
+    plan: 0.5c-1g
+    ipAllowList: []
 services:
   - type: web
     name: civicshield-api
     runtime: docker
     plan: starter
+    autoDeployTrigger: off
     dockerfilePath: ./backend/Dockerfile
     dockerContext: .
     healthCheckPath: /api/ready
@@ -42,8 +44,23 @@ services:
     name: civicshield-web
     runtime: static
     rootDir: frontend
+    autoDeployTrigger: off
     buildCommand: npm install --no-audit --no-fund && npm run build
     staticPublishPath: ./dist
+    routes:
+      - type: rewrite
+        source: /*
+        destination: /index.html
+    headers:
+      - path: /*
+        name: X-Content-Type-Options
+        value: nosniff
+      - path: /*
+        name: Referrer-Policy
+        value: no-referrer
+      - path: /*
+        name: X-Frame-Options
+        value: DENY
     envVars:
       - key: VITE_API_BASE
         sync: false
