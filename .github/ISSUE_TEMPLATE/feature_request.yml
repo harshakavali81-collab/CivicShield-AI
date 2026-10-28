@@ -1,0 +1,24 @@
+name: Research feature request
+description: Propose a safe, evidence-aware engineering improvement
+title: "[Feature] "
+labels: ["enhancement"]
+body:
+  - type: markdown
+    attributes:
+      value: >
+        Do not propose issuing real emergency warnings, handling personal incidents,
+        or using unlicensed government datasets without documented agreements and domain review.
+  - type: textarea
+    id: value
+    attributes:
+      label: Engineering problem and scope
+      description: Explain the expected behavior and why it improves the research demo.
+    validations:
+      required: true
+  - type: textarea
+    id: source
+    attributes:
+      label: Data provenance and test plan
+      description: Identify source rights, synthetic fixtures, validation constraints and safeguards.
+    validations:
+      required: true

@@ -49,6 +49,17 @@ The smoke CLI confirms that synthetic values are labeled, missing official feeds
 
 **Local development/research demo, not a deployed public emergency-warning system.** API tests, React build and initial database migration are checked by GitHub Actions. The weather explorer can fetch third-party *modeled* weather when explicitly enabled; official IMD/CWC alerts are **not connected**. No public-safety efficacy is claimed.
 
+## Release 0.2.0 — reproducible portfolio demo
+
+The latest upgrade includes the **interactive fictional Scenario Lab**, a production-configuration preflight checker and stronger audit pseudonym hashing. The CLI provides actionable setup blockers without leaking credentials:
+
+```bash
+python -m scripts.doctor --mode local
+python -m scripts.doctor --mode production --json
+```
+
+For the interview-ready walkthrough, see the [Case study](docs/CASE_STUDY.md), [Changelog](CHANGELOG.md), [Release checklist](docs/RELEASE_CHECKLIST.md), [Security policy](SECURITY.md) and [Contributing guide](CONTRIBUTING.md). A green preflight is a **configuration check only**, not cloud or emergency-service certification.
+
 ## New: Interactive fictional case study
 
 **Scenario Lab** opens instantly with 24 hours of deterministic, fully fictional values. It includes an interactive rainfall/report-count chart, four guided engineering stages, and safety/provenance checks. The endpoint is read-only and deliberately makes **no** government calls or incident database writes.
