@@ -12,6 +12,7 @@ import json
 import os
 import shutil
 from urllib.parse import urlsplit
+from backend.app.oidc import _configuration
 
 CHECKS = {
     "APP_ENV": "runtime environment",
@@ -80,6 +81,27 @@ def evaluate(mode: str = "local", env: dict | None = None, executable=shutil.whi
                 failures.append(f"{field} must be an external HTTPS URL.")
         if not config.get("OIDC_AUDIENCE"):
             failures.append("OIDC_AUDIENCE is missing.")
+        # Match real server verification, without attempting network requests.
+        # Feed the supplied values into the same validator without changing
+        # global environment or printing configured secrets.
+        host_settings = ("OIDC_ISSUER", "OIDC_AUDIENCE", "OIDC_JWKS_URL", "OIDC_JWKS_ALLOWED_HOSTS")
+        saved = {name: os.environ.get(name) for name in host_settings}
+        try:
+            for name in host_settings:
+                if name in config:
+                    os.environ[name] = config[name]
+                else:
+                    os.environ.pop(name, None)
+            try:
+                _configuration()
+            except RuntimeError:
+                failures.append("OIDC issuer/JWKS host validation failed; use a trusted HTTPS host.")
+        finally:
+            for name, previous in saved.items():
+                if previous is None:
+                    os.environ.pop(name, None)
+                else:
+                    os.environ[name] = previous
         origins = [o.strip() for o in config.get("CORS_ORIGINS", "").split(",") if o.strip()]
         if not origins or not all(_https_origin(o) and "*" not in o for o in origins):
             failures.append("CORS_ORIGINS must list explicit external HTTPS origins.")

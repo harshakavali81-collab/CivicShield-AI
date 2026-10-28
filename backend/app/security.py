@@ -4,6 +4,7 @@ from collections import defaultdict, deque
 from datetime import datetime, timezone
 import hmac
 import os
+from uuid import uuid4
 from threading import Lock
 from time import monotonic
 from fastapi import HTTPException, Request
@@ -33,6 +34,9 @@ def rate_limit(request: Request, bucket: str, limit: int = 30, window_seconds: i
             _times.clear()
 
 def security_headers(response):
+    # Fresh random correlation value, never copied from untrusted client input.
+    # No headers, tokens, incident narratives or locations are logged here.
+    response.headers["X-Request-ID"] = uuid4().hex
     response.headers["X-Content-Type-Options"] = "nosniff"
     response.headers["Referrer-Policy"] = "no-referrer"
     response.headers["X-Frame-Options"] = "DENY"

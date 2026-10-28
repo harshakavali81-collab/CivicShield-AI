@@ -37,3 +37,9 @@ Register a public OAuth/OIDC SPA client configured for Authorization Code + PKCE
 ## Pseudonymous reviewer audit identities
 
 A production installation must set a separate high-entropy `AUDIT_HASH_SECRET` with at least 32 characters, stored only in the hosting secret manager. The backend derives a stable HMAC-SHA256 reference from a verified OIDC issuer and subject without returning raw subject IDs. Local demo-key reviews remain unattributed. Changing the secret changes future actor references; document a controlled migration/retention process before rotation. HMAC alone is **not** user consent, an audit retention policy or proof that local users are properly authorized.
+
+## JWKS endpoint trust and request traceability
+
+By default the backend will only fetch OIDC JWKS signing keys from the **same HTTPS hostname** as the configured OIDC issuer. This prevents accidental JWKS URL drift and local/private IP endpoints. If a real provider intentionally hosts keys on a different DNS hostname, list the **exact approved hostname** in `OIDC_JWKS_ALLOWED_HOSTS` (comma-separated, no wildcards). Use HTTPS on the standard port 443 and verify the identity provider's published configuration. This checks URLs before fetching; it is **not** a defense against DNS rebinding, a cloud egress firewall, or a full IdP security review.
+
+Each API response includes a randomly generated `X-Request-ID` for diagnostics. This value is generated on the server, never copied from a caller, and does not expose any token or personal incident detail. If instrumenting centralized logs later, log only this ID, endpoint template, status, and operation duration; do not log authorization headers, report content, coordinates or identity-provider credentials.

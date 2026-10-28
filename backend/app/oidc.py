@@ -5,8 +5,9 @@ issue tokens, or grant anyone the responder role.
 """
 from __future__ import annotations
 import os
+from ipaddress import ip_address
 from functools import lru_cache
-from urllib.parse import urlparse, urlsplit
+from urllib.parse import urlsplit
 import jwt
 from fastapi import HTTPException, Request
 from jwt import PyJWKClient
@@ -14,16 +15,60 @@ from jwt import PyJWKClient
 def oidc_enabled() -> bool:
     return os.getenv("AUTH_MODE", "demo_key").strip().lower() == "oidc"
 
+def _trusted_https_host(url: str, name: str) -> str:
+    """Reject accidental local network/JWKS targets before HTTP is attempted.
+
+    This is *configuration validation*, not DNS rebinding protection. Deployments
+    must also enforce HTTPS certificate verification and network egress policy.
+    """
+    if not url or any(ord(ch) < 32 or ord(ch) == 127 for ch in url):
+        raise RuntimeError(f"{name} must be a trusted external HTTPS URL")
+    try:
+        parsed = urlsplit(url)
+        host = (parsed.hostname or "").rstrip(".").lower()
+        port = parsed.port
+    except ValueError as exc:
+        raise RuntimeError(f"{name} must be a valid HTTPS URL") from exc
+    if (parsed.scheme != "https" or not host or not parsed.netloc
+        or parsed.username is not None or parsed.password is not None
+        or parsed.query or parsed.fragment or port not in (None, 443)):
+        raise RuntimeError(f"{name} must be a trusted external HTTPS URL")
+    if host == "localhost" or host.endswith((".localhost", ".local", ".internal")):
+        raise RuntimeError(f"{name} cannot target local services")
+    try:
+        address = ip_address(host)
+    except ValueError:
+        # Require an unambiguous hostname rather than a relative/intranet name.
+        if "." not in host or host.startswith(".") or host.endswith("."):
+            raise RuntimeError(f"{name} needs a public DNS hostname")
+    else:
+        if not address.is_global:
+            raise RuntimeError(f"{name} cannot target a private or reserved IP address")
+    return host
+
+
 def _configuration() -> tuple[str, str, str]:
     issuer = os.getenv("OIDC_ISSUER", "").rstrip("/")
     audience = os.getenv("OIDC_AUDIENCE", "")
     jwks_url = os.getenv("OIDC_JWKS_URL", "")
-    endpoints = (urlparse(issuer), urlparse(jwks_url))
-    if (not all((issuer, audience, jwks_url))
-        or any(p.scheme != "https" or not p.hostname or p.username or p.password for p in endpoints)
-        or any(p.fragment or p.query for p in endpoints)):
-        raise RuntimeError("OIDC requires issuer, audience, and HTTPS JWKS endpoint")
+    if not issuer or not audience or not jwks_url or audience.strip() != audience:
+        raise RuntimeError("OIDC issuer, audience and JWKS endpoint are required")
+    issuer_host = _trusted_https_host(issuer, "OIDC_ISSUER")
+    jwks_host = _trusted_https_host(jwks_url, "OIDC_JWKS_URL")
+
+    # Same-host keys are the typical OIDC arrangement. For separately hosted
+    # signing keys, an operator must explicitly allow the precise hostname.
+    alternate_hosts = {
+        part.strip().lower()
+        for part in os.getenv("OIDC_JWKS_ALLOWED_HOSTS", "").split(",")
+        if part.strip()
+    }
+    if any("*" in host or "/" in host or ":" in host for host in alternate_hosts):
+        raise RuntimeError("OIDC_JWKS_ALLOWED_HOSTS must use exact DNS hostnames")
+    if jwks_host != issuer_host and jwks_host not in alternate_hosts:
+        raise RuntimeError("JWKS hostname must match issuer or be explicitly allowed")
     return issuer, audience, jwks_url
+
 
 @lru_cache(maxsize=8)
 def _jwk_client(url: str) -> PyJWKClient:
