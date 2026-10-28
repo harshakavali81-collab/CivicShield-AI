@@ -41,6 +41,7 @@ class ReviewAudit(Base):
     __tablename__ = "review_audit"
     id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
     incident_id: Mapped[str] = mapped_column(String(36), index=True)
+    actor_ref: Mapped[str] = mapped_column(String(64), default="local_demo_shared_key", nullable=False)
     previous_status: Mapped[str] = mapped_column(String(20))
     new_status: Mapped[str] = mapped_column(String(20))
     reviewer_note: Mapped[str] = mapped_column(Text, default="")

@@ -19,7 +19,8 @@ from civicshield.ingestion.sources import SOURCE_CATALOG
 from civicshield.ml.predict import estimate_risk
 from civicshield.ingestion.open_meteo import fetch_weather
 from civicshield.assistant.retrieval import search_docs
-from civicshield.incident_management.geospatial import haversine_km
+from backend.app.geo_query import find_nearby
+from backend.app.reviewer_identity import actor_reference
 from backend.app.security import require_reporter_key, rate_limit, security_headers
 from backend.app.oidc import oidc_enabled, require_oidc_reviewer, validate_production_configuration
 from civicshield.ingestion.imd_official import enabled as imd_enabled, fetch_district_warning
@@ -222,8 +223,8 @@ def review_queue(db: Session = Depends(get_db)):
     reports = db.scalars(select(Incident).order_by(Incident.created_at.desc()).limit(100)).all()
     return {"incidents": [reviewer_incident(r) for r in reports], "limit": 100}
 
-@app.patch("/api/v1/incidents/{incident_id}/review", tags=["responders"], dependencies=[Depends(require_reviewer)])
-def review_report(incident_id: str, request: IncidentReview, db: Session = Depends(get_db)):
+@app.patch("/api/v1/incidents/{incident_id}/review", tags=["responders"])
+def review_report(incident_id: str, request: IncidentReview, db: Session = Depends(get_db), reviewer: dict = Depends(require_reviewer)):
     report = db.get(Incident, incident_id)
     if not report:
         raise HTTPException(status_code=404, detail="Report not found")
@@ -231,7 +232,7 @@ def review_report(incident_id: str, request: IncidentReview, db: Session = Depen
     report.status = request.status
     report.reviewer_note = redact_contact_info(request.reviewer_note)
     db.add(ReviewAudit(
-        incident_id=incident_id, previous_status=previous, new_status=request.status,
+        incident_id=incident_id, actor_ref=actor_reference(reviewer), previous_status=previous, new_status=request.status,
         reviewer_note=report.reviewer_note,
     ))
     db.commit()
@@ -245,24 +246,21 @@ def nearby_incidents(
     radius_km: float = Query(default=10, gt=0, le=50),
     db: Session = Depends(get_db),
 ):
-    # Bounded demo query; use ST_DWithin with a verified PostGIS schema at scale.
-    candidates = db.scalars(
-        select(Incident).where(
-            Incident.latitude.is_not(None), Incident.longitude.is_not(None),
-        ).order_by(Incident.created_at.desc()).limit(5000)
-    ).all()
-    matches = []
-    for incident in candidates:
-        distance = haversine_km(latitude, longitude, incident.latitude, incident.longitude)
-        if distance <= radius_km:
-            matches.append({**reviewer_incident(incident), "distance_km": round(distance, 2)})
-    matches.sort(key=lambda item: item["distance_km"])
+    try:
+        result = find_nearby(db, latitude, longitude, radius_km)
+    except (ValueError, RuntimeError) as exc:
+        raise HTTPException(status_code=503, detail="Configured geospatial backend unavailable") from exc
     return {
-        "incidents": matches[:100],
+        "incidents": [
+            {**reviewer_incident(report), "distance_km": distance}
+            for report, distance in result.matches
+        ],
         "radius_km": radius_km,
-        "scanned_limit": 5000,
-        "total_matches_in_scan": len(matches),
-        "warning": "Unverified citizen reports only. This bounded scan is not authoritative or exhaustive.",
+        "scanned_limit": result.scanned_limit,
+        "search_backend": result.backend,
+        "possibly_incomplete": result.possibly_incomplete,
+        "total_matches_in_scan": len(result.matches),
+        "warning": "Unverified reports. Do not rely on this for emergency response, public warnings or rescue routes.",
     }
 
 @app.get("/api/v1/incidents/audit", tags=["responders"], dependencies=[Depends(require_reviewer)])
@@ -271,7 +269,7 @@ def review_audit(db: Session = Depends(get_db)):
     return {"events": [
         {
             "id": e.id, "incident_id": e.incident_id,
-            "previous_status": e.previous_status, "new_status": e.new_status,
+            "actor_ref": e.actor_ref, "previous_status": e.previous_status, "new_status": e.new_status,
             "changed_at": e.changed_at.isoformat(),
         }
         for e in events
