@@ -12,6 +12,7 @@ import LiveWeather from './LiveWeather.jsx';
 import KnowledgeSearch from './KnowledgeSearch.jsx';
 import OfficialSources from './OfficialSources.jsx';
 import Diagnostics from './Diagnostics.jsx';
+import ScenarioLab from './ScenarioLab.jsx';
 
 const riskDefaults = { city: 'Hyderabad', rainfall_24h_mm: 68, temperature_c: 29, humidity_pct: 85, forecast_age_hours: 1 };
 const categories = { flooding: 'Flood / waterlogging', fallen_tree: 'Fallen tree', road_block: 'Road block', heat: 'Heat', other: 'Other' };
@@ -19,6 +20,7 @@ const languages = { en: 'English', te: 'తెలుగు', hi: 'हिन्�
 const nav = [
   ['dashboard', LayoutDashboard, 'Overview'],
   ['risk', CloudRain, 'Risk explorer'],
+  ['scenario', Activity, 'Scenario lab'],
   ['weather', CloudRain, 'Modeled weather'],
   ['official', ShieldCheck, 'Official sources'],
   ['map', MapPinned, 'Illustrative map'],
@@ -279,6 +281,7 @@ export default function App() {
       <main id="main-content" className="main-content">
         {tab==='dashboard'&&<Dashboard onNavigate={navigate}/>}
         {tab==='risk'&&<RiskExplorer/>}
+        {tab==='scenario'&&<ScenarioLab/>}
         {tab==='weather'&&<LiveWeather/>}
         {tab==='official'&&<OfficialSources/>}
         {tab==='diagnostics'&&<Diagnostics/>}

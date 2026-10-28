@@ -28,7 +28,7 @@ tracking = ["mlflow>=2.15,<4"]
 migrations = ["alembic>=1.13,<2"]
 
 [tool.setuptools]
-packages = ["backend", "backend.app", "civicshield", "civicshield.ml", "civicshield.assistant", "civicshield.incident_management", "civicshield.monitoring", "civicshield.ingestion", "civicshield.data_processing"]
+packages = ["backend", "backend.app", "civicshield", "civicshield.ml", "civicshield.assistant", "civicshield.incident_management", "civicshield.monitoring", "civicshield.ingestion", "civicshield.data_processing", "civicshield.demo"]
 
 [tool.setuptools.package-dir]
 civicshield = "src/civicshield"

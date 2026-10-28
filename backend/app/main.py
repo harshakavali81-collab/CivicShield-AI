@@ -19,6 +19,7 @@ from civicshield.ingestion.sources import SOURCE_CATALOG
 from civicshield.ml.predict import estimate_risk
 from civicshield.ingestion.open_meteo import fetch_weather
 from civicshield.assistant.retrieval import search_docs
+from civicshield.demo.scenarios import build_scenario
 from backend.app.geo_query import find_nearby
 from backend.app.reviewer_identity import actor_reference
 from backend.app.security import require_reporter_key, rate_limit, security_headers
@@ -159,6 +160,11 @@ async def imd_district_warning(
             status_code=503,
             detail="Official district bulletin could not be authenticated, parsed or verified as fresh; consult IMD directly",
         ) from exc
+
+@app.get("/api/v1/demo/scenario", tags=["demonstration"])
+def demo_scenario():
+    """Immutable fictional case study with zero incident DB writes."""
+    return build_scenario()
 
 @app.get("/api/v1/weather/sample", tags=["weather"])
 def sample_weather():
