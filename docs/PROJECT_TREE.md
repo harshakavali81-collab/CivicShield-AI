@@ -1,6 +1,6 @@
-# CivicShield AI — complete current repository tree
+# CivicShield AI — complete GitHub project tree
 
-Generated from **155 tracked files** in GitHub `main`. This is an index of real project files, not evidence of public-safety certification or live hosting.
+Generated from **160 tracked source files** on the current `main` branch. All files below exist in the repository. This structure does not prove real-world hazard prediction or operational emergency-service certification.
 
 ```text
 CivicShield-AI/
@@ -72,6 +72,7 @@ CivicShield-AI/
 │   ├── QUICKSTART_WINDOWS.md
 │   ├── RELEASE_CHECKLIST.md
 │   ├── RELEASE_STATUS.md
+│   ├── RENDER_BLUEPRINT_GUIDE.md
 │   ├── ROADMAP.md
 │   ├── SAFETY_AND_PRIVACY.md
 │   ├── TEST_PLAN.md
@@ -105,12 +106,14 @@ CivicShield-AI/
 │   ├── check_data_quality.py
 │   ├── collect_weather.py
 │   ├── doctor.py
+│   ├── package_portfolio.py
 │   ├── plot_metrics.py
 │   ├── purge_incidents.py
 │   ├── smoke_compose.py
 │   ├── smoke_demo.py
 │   ├── start-local.ps1
 │   ├── stop-local.ps1
+│   ├── validate_blueprint.py
 │   ├── verify_postgis.py
 │   └── verify_site.py
 ├── site/
@@ -167,8 +170,10 @@ CivicShield-AI/
 │   ├── test_integrations.py
 │   ├── test_new_features.py
 │   ├── test_operations.py
+│   ├── test_portfolio_package.py
 │   ├── test_readiness.py
 │   ├── test_release_integrity.py
+│   ├── test_render_blueprint.py
 │   ├── test_repository_hygiene.py
 │   ├── test_risk.py
 │   ├── test_scenario_lab.py
@@ -192,14 +197,16 @@ CivicShield-AI/
 └── SECURITY.md
 ```
 
-## Essential links
+## Engineering and portfolio entry points
 
-- [Full-stack engineering architecture](ARCHITECTURE.md) and [visual gallery](VISUALIZATIONS.md)
-- [React UI, keyboard navigation and Playwright tests](BROWSER_ACCEPTANCE.md)
-- [Local Docker Compose and PostgreSQL/PostGIS integration](END_TO_END_VERIFICATION.md)
-- [Interactive fabricated case study](CASE_STUDY.md)
-- [Static GitHub Pages publishing guide](GITHUB_PAGES_PUBLISH.md)
-- [Complete release status and unresolved external dependencies](RELEASE_STATUS.md)
-- [Windows quick start](QUICKSTART_WINDOWS.md) and [deployment controls](PRODUCTION_SETUP.md)
+- [Project overview, how to run and visual gallery](../README.md)
+- [Case-study diagrams and research walkthrough](CASE_STUDY.md)
+- [Full local API, database, React and Nginx integration](END_TO_END_VERIFICATION.md)
+- [Chromium browser interaction and accessibility tests](BROWSER_ACCEPTANCE.md)
+- [Render cloud Blueprint guards and explicit account/cost requirements](RENDER_BLUEPRINT_GUIDE.md)
+- [Reproducible offline static portfolio ZIP generator](../scripts/package_portfolio.py)
+- [Static informational GitHub Pages deployment checklist](GITHUB_PAGES_PUBLISH.md)
+- [Source/code/release CI jobs](../.github/workflows/ci.yml)
+- [Exact remaining external dependencies](RELEASE_STATUS.md)
 
-No real IMD/CWC authority, hosted identity-provider tenant, validated flood predictions, or government emergency operations are asserted.
+**Scope notice:** Cloud hosting, real identity providers, official IMD/CWC permissions and independently certified disaster prediction remain outside this verified code release.
