@@ -4,10 +4,12 @@ The **site/** directory contains a responsive HTML/CSS research-portfolio page a
 
 ## What is included
 
-- `site/index.html`: static portfolio, explicit research-only description, a fictional case study and keyboard skip link.
+- `site/index.html`: static portfolio with a link to the offline interactive fictional scenario.
+- `site/demo.html`, `site/demo.js`, `site/scenario-data.js`: a standalone self-contained 24-hour fictional interactive chart and four-stage walkthrough, using local files and no network calls.
 - `site/assets/`: original SVG diagrams that are checked against local references.
 - `site/favicon.svg` and `site/robots.txt`: project identity and crawler instructions.
-- `scripts/verify_site.py`: offline check for valid assets, accessible image descriptions and accurate fictional-data disclaimer.
+- `scripts/verify_site.py`: offline checks for valid assets, accessible descriptions, allowlisted local scripts, fictional-data integrity and source-free behavior.
+- `scripts/export_static_demo.py`: deterministic generated browser dataset and canonical Python API equality check.
 - `.github/workflows/pages.yml`: manually triggered publishing workflow with validation.
 
 ## Owner action needed for a public website

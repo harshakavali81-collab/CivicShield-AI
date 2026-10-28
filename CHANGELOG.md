@@ -4,6 +4,15 @@ All versions describe **software capabilities**, not certification or authorizat
 
 ## Unreleased — End-to-end integration
 
+### Fully offline interactive research demonstration
+
+- Added `site/demo.html` and `site/demo.js`: a dependency-free SVG timeline with keyboard-operable slider, accessible data table and four selectable walkthrough chapters.
+- Exported browser-only synthetic data from the canonical deterministic Python case study to `site/scenario-data.js`.
+- Added source-equality checks, allowlisted local script audit and three additional Chromium tests that open `file://` resources without an API, hosting account or network.
+- The demo does **not** fetch government data, submit reports, issue warnings or validate scientific predictions.
+
+
+
 ### Shareable portfolio and cloud template verification
 
 - Checked Render Blueprint against updated database plan identifiers, explicit cost warnings, application rewrite rules and restrictive defaults.

@@ -48,6 +48,14 @@ pytest -q tests/test_scenario_lab.py
 
 Launch the frontend using `cd frontend && npm install && npm run dev`, then choose **Scenario lab**.
 
+## Standalone interactive offline version
+
+The separate `site/demo.html` version works in a local browser without the Python API, network, OIDC, React server, or database. It provides original SVG bars/line charts, an hour slider, all 24 data rows in an accessible table, a keyboard-operable four-stage walkthrough and a visible **FICTIONAL** notice.
+
+The export is produced by `python -m scripts.export_static_demo` from `src/civicshield/demo/scenarios.py` and checked by `python -m scripts.export_static_demo --check`. A drifted or missing dataset causes the portfolio validation to fail, rather than displaying mismatched sample data. The standalone page never sends real incident reports or requests source APIs.
+
+For a no-backend demo: extract the ZIP from [GitHub Actions](https://github.com/harshakavali81-collab/CivicShield-AI/actions/workflows/ci.yml) and open `demo.html`.
+
 ## Engineering talking points for interviews
 
 - Reproducible, side-effect-free Python data generation with explicit metadata.

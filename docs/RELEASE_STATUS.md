@@ -13,6 +13,7 @@ This report separates tested software from unverified external operational depen
 - [x] Real full-stack Docker Compose HTTP acceptance testing
 - [x] Chromium Playwright UI scenarios for desktop/mobile and keyboard interactions
 - [x] Offline GitHub Pages informational site with original SVG assets and static-site safety tests
+- [x] Fully interactive browser-only fictional case-study page with a 24-hour chart, adjustable timeline, data table and four guided steps; synthetic static data is verified against the Python API source
 - [x] Deployment preflight CLI with no printed secrets
 - [x] Automated offline Render Blueprint structural checks (including paid-plan disclosure and fail-closed settings)
 - [x] GitHub Actions artifact with deterministic static portfolio ZIP and SHA-256 checksum
