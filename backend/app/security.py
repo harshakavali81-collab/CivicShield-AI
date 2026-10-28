@@ -1,15 +1,19 @@
 """Minimal protective controls for a local demo. Not production IAM, rate limits or anti-bot."""
 from __future__ import annotations
 from collections import defaultdict, deque
-from datetime import datetime, timezone
 import hmac
 import os
 from uuid import uuid4
 from threading import Lock
 from time import monotonic
+from math import ceil
 from fastapi import HTTPException, Request
 
 _lock = Lock()
+# A bounded in-process demo limiter. Deque values are monotonic *expiry* times,
+# preserving each entry's original window even when callers use different windows.
+# This is not a distributed production traffic-control system.
+MAX_RATE_LIMIT_KEYS = 5000
 _times: dict[tuple[str, str], deque[float]] = defaultdict(deque)
 
 def require_reporter_key(request: Request):
@@ -17,21 +21,53 @@ def require_reporter_key(request: Request):
     if configured and not hmac.compare_digest(request.headers.get("X-Reporter-Key", ""), configured):
         raise HTTPException(status_code=403, detail="Reporter access key required")
 
+def _prune_expired(now: float) -> None:
+    """Remove only expired entries, preserving active client quotas.
+
+    Must be called with _lock held. We scan when capacity is reached rather
+    than on every request, avoiding normal-path O(N) work.
+    """
+    for key, expires in tuple(_times.items()):
+        while expires and expires[0] <= now:
+            expires.popleft()
+        if not expires:
+            del _times[key]
+
+
 def rate_limit(request: Request, bucket: str, limit: int = 30, window_seconds: int = 3600):
-    # Single-process guard, keyed by socket peer rather than X-Forwarded-For.
-    # A shared Redis limiter and authenticated accounts are required at scale.
-    addr = request.client.host if request.client else "unknown"
-    key = (bucket, addr)
+    """Best-effort local per-socket guard, never a public security boundary.
+
+    Ignore untrusted X-Forwarded-For. A shared reverse-proxy socket can cause
+    users to share a quota; real hosting needs authenticated identities and a
+    shared datastore/edge limiter. At capacity reject new keys instead of
+    clearing existing histories and granting fresh request allowances.
+    """
+    if limit < 1 or window_seconds < 1:
+        raise ValueError("Rate-limit configuration must be positive")
+    address = request.client.host if request.client else "unknown"
+    key = (bucket, address)
     now = monotonic()
     with _lock:
-        dq = _times[key]
-        while dq and now - dq[0] >= window_seconds:
-            dq.popleft()
-        if len(dq) >= limit:
-            raise HTTPException(status_code=429, detail="Local request limit exceeded; retry later")
-        dq.append(now)
-        if len(_times) > 5000:
-            _times.clear()
+        if key not in _times and len(_times) >= MAX_RATE_LIMIT_KEYS:
+            _prune_expired(now)
+            if len(_times) >= MAX_RATE_LIMIT_KEYS:
+                raise HTTPException(
+                    status_code=429,
+                    detail="Demo rate-limit capacity reached; retry later",
+                    headers={"Retry-After": "60"},
+                )
+        expires = _times[key]
+        while expires and expires[0] <= now:
+            expires.popleft()
+        if len(expires) >= limit:
+            retry_after = max(1, ceil(expires[0] - now))
+            raise HTTPException(
+                status_code=429,
+                detail="Local request limit exceeded; retry later",
+                headers={"Retry-After": str(retry_after)},
+            )
+        expires.append(now + window_seconds)
+
 
 def security_headers(response):
     # Fresh random correlation value, never copied from untrusted client input.
