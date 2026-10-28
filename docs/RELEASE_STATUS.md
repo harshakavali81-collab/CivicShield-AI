@@ -17,6 +17,10 @@ This report separates tested software from unverified external operational depen
 - [x] Deployment preflight CLI with no printed secrets
 - [x] Automated offline Render Blueprint structural checks (including paid-plan disclosure and fail-closed settings)
 - [x] GitHub Actions artifact with deterministic static portfolio ZIP and SHA-256 checksum
+- [x] Reviewed and locked-down OIDC JWKS endpoint hostname policy (operator-approved external HTTPS origins only; not a DNS egress firewall)
+- [x] Server-issued per-response request IDs without echoing untrusted caller IDs
+- [x] Optimistic reviewer status-change checking with atomic status/audit commits, HTTP 409 on stale edits and interface reload instructions
+- [x] CI-generated real Chromium screenshots of synthetic desktop, scenario, source-connection and mobile screens (30-day downloadable artifact)
 - [x] Developer runbooks, model-card boundaries, data-safety rules, CI workflows, case study, diagrams
 
 The source of truth for the latest pass/fail status is [GitHub Actions](https://github.com/harshakavali81-collab/CivicShield-AI/actions). Do not claim a successful run without its commit and job results.

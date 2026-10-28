@@ -4,6 +4,16 @@ All versions describe **software capabilities**, not certification or authorizat
 
 ## Unreleased — End-to-end integration
 
+### OIDC security, human-review consistency and real UI capture
+
+- Restrict signing-key JWKS URLs to trusted external HTTPS origins, defaulting to the issuer's hostname; allow exceptions only through exact operator-controlled hostnames.
+- Generate a new server-side `X-Request-ID` in responses for privacy-conscious traceability without logging incident narratives, credentials, or user-supplied tokens.
+- Add optional `expected_status` on reviewer decisions; stale submissions return HTTP 409, preventing silent overwrites and stray audit records.
+- Capture four **actual Chromium screenshots from synthetic CI data**, with visible not-live/fictional disclaimers, and upload them as a downloadable 30-day GitHub Actions artifact.
+- These quality improvements do **not** establish an approved identity provider, real emergency authority, or hosted public alert service.
+
+
+
 ### Fully offline interactive research demonstration
 
 - Added `site/demo.html` and `site/demo.js`: a dependency-free SVG timeline with keyboard-operable slider, accessible data table and four selectable walkthrough chapters.

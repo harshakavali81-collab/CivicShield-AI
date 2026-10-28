@@ -1,6 +1,6 @@
-# CivicShield AI — tracked GitHub source tree
+# CivicShield AI — complete GitHub source tree
 
-Regenerated directly from **166 files** on the GitHub `main` branch. This verifies the listed file names, not operational approval for live disaster monitoring.
+This tree is generated from **170 files currently tracked** on the repository's `main` branch. It describes code and documentation, not official emergency-service certification.
 
 ```text
 CivicShield-AI/
@@ -75,12 +75,14 @@ CivicShield-AI/
 │   ├── RENDER_BLUEPRINT_GUIDE.md
 │   ├── ROADMAP.md
 │   ├── SAFETY_AND_PRIVACY.md
+│   ├── SCREENSHOT_SHOWCASE.md
 │   ├── TEST_PLAN.md
 │   └── VISUALIZATIONS.md
 ├── frontend/
 │   ├── e2e/
 │   │   ├── offline-site.spec.js
-│   │   └── portfolio.spec.js
+│   │   ├── portfolio.spec.js
+│   │   └── screenshots.spec.js
 │   ├── src/
 │   │   ├── api.js
 │   │   ├── App.jsx
@@ -180,8 +182,10 @@ CivicShield-AI/
 │   ├── test_release_integrity.py
 │   ├── test_render_blueprint.py
 │   ├── test_repository_hygiene.py
+│   ├── test_review_conflict.py
 │   ├── test_risk.py
 │   ├── test_scenario_lab.py
+│   ├── test_security_hardening.py
 │   ├── test_smoke_demo.py
 │   ├── test_static_portfolio.py
 │   ├── test_static_scenario.py
@@ -203,16 +207,15 @@ CivicShield-AI/
 └── SECURITY.md
 ```
 
-## Entry points and source walkthroughs
+## Main verified workflows
 
-- [Full project README and visual gallery](../README.md)
-- [Completely offline, interactive fictional demo](../site/demo.html)
-- [Offline visualization JavaScript and data](../site/demo.js) · [Source dataset](../site/scenario-data.js)
-- [Canonical Python scenario generator](../src/civicshield/demo/scenarios.py)
-- [Data equivalence/side-effect test](../tests/test_static_scenario.py) · [offline browser tests](../frontend/e2e/offline-site.spec.js)
-- [Full React dashboard and API integration tests](END_TO_END_VERIFICATION.md)
-- [Portable demo packaging and checksums](../scripts/package_portfolio.py)
-- [Source provenance, ML research and ethics](CASE_STUDY.md) · [model card](MODEL_CARD.md)
-- [Deployment requirements and exact external blockers](RELEASE_STATUS.md) · [GitHub Pages publishing](GITHUB_PAGES_PUBLISH.md)
+- [Application and original architectural diagrams](../README.md)
+- [Offline, interactive fictional scenario](../site/demo.html)
+- [Full Docker Compose acceptance tests](END_TO_END_VERIFICATION.md)
+- [Desktop/mobile Chromium browser screenshots](SCREENSHOT_SHOWCASE.md)
+- [Request authentication and auditor safeguards](PRODUCTION_SETUP.md)
+- [Optimistic review conflict behavior and API contracts](API_REFERENCE.md)
+- [Exact scope and external prerequisites](RELEASE_STATUS.md)
+- [Prepared GitHub Pages workflow](GITHUB_PAGES_PUBLISH.md)
 
-The offline case study has **no** real events, live official warnings, or government emergency dispatch. These require independent authorization and domain-specific review.
+No public host, real government alert stream, scientifically validated disaster prediction, or operational emergency approval is asserted.
