@@ -28,9 +28,11 @@ def _prune_expired(now: float) -> None:
     than on every request, avoiding normal-path O(N) work.
     """
     for key, expires in tuple(_times.items()):
-        while expires and expires[0] <= now:
-            expires.popleft()
-        if not expires:
+        active = [deadline for deadline in expires if deadline > now]
+        if active:
+            expires.clear()
+            expires.extend(active)
+        else:
             del _times[key]
 
 
@@ -57,10 +59,13 @@ def rate_limit(request: Request, bucket: str, limit: int = 30, window_seconds: i
                     headers={"Retry-After": "60"},
                 )
         expires = _times[key]
-        while expires and expires[0] <= now:
-            expires.popleft()
+        # A demo extension might use differing windows on one key. Expiry
+        # order is not guaranteed in that case: retain all active deadlines.
+        active = [deadline for deadline in expires if deadline > now]
+        expires.clear()
+        expires.extend(active)
         if len(expires) >= limit:
-            retry_after = max(1, ceil(expires[0] - now))
+            retry_after = max(1, ceil(min(expires) - now))
             raise HTTPException(
                 status_code=429,
                 detail="Local request limit exceeded; retry later",
