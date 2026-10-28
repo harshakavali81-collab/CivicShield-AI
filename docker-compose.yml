@@ -5,7 +5,7 @@ services:
     environment:
       POSTGRES_DB: civicshield
       POSTGRES_USER: civicshield
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-local_demo_change_me}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Set_a_strong_POSTGRES_PASSWORD_in_your_gitignored_.env}
     volumes:
       - civicshield_pg:/var/lib/postgresql/data
     healthcheck:
@@ -20,11 +20,13 @@ services:
     ports:
       - "127.0.0.1:8000:8000"
     environment:
-      DATABASE_URL: postgresql+psycopg://civicshield:${POSTGRES_PASSWORD:-local_demo_change_me}@db:5432/civicshield
+      DATABASE_URL: postgresql+psycopg://civicshield:${POSTGRES_PASSWORD:?Set_a_strong_POSTGRES_PASSWORD_in_your_gitignored_.env}@db:5432/civicshield
       INCIDENT_SUBMISSIONS_ENABLED: ${INCIDENT_SUBMISSIONS_ENABLED:-false}
       RESPONDER_API_KEY: ${RESPONDER_API_KEY:-}
       REPORTER_API_KEY: ${REPORTER_API_KEY:-}
       OPEN_METEO_ENABLED: ${OPEN_METEO_ENABLED:-false}
+      GEOSPATIAL_BACKEND: ${GEOSPATIAL_BACKEND:-portable}
+      APP_ENV: local
       CIVICSHIELD_MODEL_PATH: ""
     depends_on:
       db:

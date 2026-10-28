@@ -34,3 +34,33 @@ jobs:
       - name: Build Vite app
         working-directory: frontend
         run: npm run build
+  postgis-integration:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgis/postgis:16-3.4
+        env:
+          POSTGRES_DB: civicshield_ci
+          POSTGRES_USER: civicshield_ci
+          POSTGRES_PASSWORD: local_ci_only_password
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U civicshield_ci -d civicshield_ci"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 10
+    env:
+      DATABASE_URL: postgresql+psycopg://civicshield_ci:local_ci_only_password@localhost:5432/civicshield_ci
+      CI_POSTGIS_TEST: "true"
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install migration and application dependencies
+        run: python -m pip install -e ".[dev,migrations]"
+      - name: Migrate real PostgreSQL schema
+        run: alembic upgrade head
+      - name: Exercise PostGIS geography index and search
+        run: python -m scripts.verify_postgis
