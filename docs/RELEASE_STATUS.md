@@ -19,6 +19,7 @@ This report separates tested software from unverified external operational depen
 - [x] GitHub Actions artifact with deterministic static portfolio ZIP and SHA-256 checksum
 - [x] Reviewed and locked-down OIDC JWKS endpoint hostname policy (operator-approved external HTTPS origins only; not a DNS egress firewall)
 - [x] Server-issued per-response request IDs without echoing untrusted caller IDs
+- [x] Bounded 5,000-key single-process API rate-limiter now reclaims only expired entries; active quota histories persist when full, with 429 responses and explicit production limitations
 - [x] Optimistic reviewer status-change checking with atomic status/audit commits, HTTP 409 on stale edits and interface reload instructions
 - [x] CI-generated real Chromium screenshots of synthetic desktop, scenario, source-connection and mobile screens (30-day downloadable artifact)
 - [x] Developer runbooks, model-card boundaries, data-safety rules, CI workflows, case study, diagrams

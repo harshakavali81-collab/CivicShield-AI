@@ -1,6 +1,6 @@
-# CivicShield AI — complete GitHub source tree
+# CivicShield AI — current complete tracked project structure
 
-This tree is generated from **170 files currently tracked** on the repository's `main` branch. It describes code and documentation, not official emergency-service certification.
+Automatically regenerated from **172 tracked files** in GitHub `main`. These are files that exist in the repository, not evidence of government authority or live hosting.
 
 ```text
 CivicShield-AI/
@@ -70,6 +70,7 @@ CivicShield-AI/
 │   ├── PROJECT_TREE.md
 │   ├── PROJECT_WORKFLOW.md
 │   ├── QUICKSTART_WINDOWS.md
+│   ├── RATE_LIMIT_BOUNDARIES.md
 │   ├── RELEASE_CHECKLIST.md
 │   ├── RELEASE_STATUS.md
 │   ├── RENDER_BLUEPRINT_GUIDE.md
@@ -178,6 +179,7 @@ CivicShield-AI/
 │   ├── test_new_features.py
 │   ├── test_operations.py
 │   ├── test_portfolio_package.py
+│   ├── test_rate_limit_capacity.py
 │   ├── test_readiness.py
 │   ├── test_release_integrity.py
 │   ├── test_render_blueprint.py
@@ -207,15 +209,17 @@ CivicShield-AI/
 └── SECURITY.md
 ```
 
-## Main verified workflows
+## Project documentation and verification
 
-- [Application and original architectural diagrams](../README.md)
-- [Offline, interactive fictional scenario](../site/demo.html)
-- [Full Docker Compose acceptance tests](END_TO_END_VERIFICATION.md)
-- [Desktop/mobile Chromium browser screenshots](SCREENSHOT_SHOWCASE.md)
-- [Request authentication and auditor safeguards](PRODUCTION_SETUP.md)
-- [Optimistic review conflict behavior and API contracts](API_REFERENCE.md)
-- [Exact scope and external prerequisites](RELEASE_STATUS.md)
-- [Prepared GitHub Pages workflow](GITHUB_PAGES_PUBLISH.md)
+- [Project overview and original visual gallery](../README.md)
+- [Offline, fully fictional interactive demo](../site/demo.html)
+- [Source-vs-offline synthetic-data verification](../scripts/export_static_demo.py)
+- [PostgreSQL/PostGIS, API and React end-to-end test](END_TO_END_VERIFICATION.md)
+- [Real Chromium UI screenshots of demo](SCREENSHOT_SHOWCASE.md)
+- [Single-process bounded rate-limiter semantics and proof tests](RATE_LIMIT_BOUNDARIES.md)
+- [Rate-limiter regression cases](../tests/test_rate_limit_capacity.py)
+- [Reviewer role and incident API safety contracts](API_REFERENCE.md)
+- [Deployment prerequisites and operational limitations](RELEASE_STATUS.md)
+- [Published-site operator-only setup steps](GITHUB_PAGES_PUBLISH.md)
 
-No public host, real government alert stream, scientifically validated disaster prediction, or operational emergency approval is asserted.
+**Scope:** Research/software demonstration only. No actual hazard predictions or emergency authority claims.
