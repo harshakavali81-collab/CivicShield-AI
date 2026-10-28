@@ -96,6 +96,16 @@ For the interview-ready walkthrough, see the [Case study](docs/CASE_STUDY.md), [
 - **Developer quality:** FastAPI, SQLAlchemy (SQLite local / PostgreSQL for Docker), Alembic initial migration, controlled backups/purge, tests, Docker Compose, CI, architecture diagrams, docs, local experiment graph generator.
 - **Safety:** no invented government alerts, no personal phone collection, no public disclosure of exact incident coordinates or narratives, reviewer audit log and optional reporter key. No distributed RBAC/anti-abuse claims.
 
+## End-to-end local stack verification
+
+The CI pipeline now tests the actual PostgreSQL/PostGIS → FastAPI → Nginx/React stack. Health-gated Compose startup, a read-only HTTP acceptance script, and teardown provide a reproducible way to prove the app serves the UI and API together.
+
+```bash
+docker compose up --build -d --wait --wait-timeout 120
+python scripts/smoke_compose.py --base http://127.0.0.1:5173
+```
+
+See [End-to-end verification and debugging](docs/END_TO_END_VERIFICATION.md). This verifies local integration only; real cloud hosting and official safety validation remain outstanding.
 ## Windows one-command setup
 
 Use [Windows quick-start instructions](docs/QUICKSTART_WINDOWS.md). After installing Docker Desktop, clone this repo and run:

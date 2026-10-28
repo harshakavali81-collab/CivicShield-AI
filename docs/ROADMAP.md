@@ -1,5 +1,13 @@
 # CivicShield AI — final software delivery versus external operational requirements
 
+## Latest software integration upgrade — October 28, 2026
+
+- [x] Full Docker Compose end-to-end acceptance job for PostgreSQL/PostGIS, FastAPI, Nginx reverse proxy and compiled React HTML.
+- [x] API + Nginx health-gated startup and a read-only eight-check integration CLI.
+- [x] SPA route fallback and isolation checks: no real incident submissions, official-data queries or emergency advisories.
+- [x] Windows one-command launcher now waits for container health, not just process startup.
+
+**These are application integration checks, not operational emergency-service certification.**
 ## October 28, 2026 infrastructure update
 
 - [x] Database schema migration for reviewer actor references, readiness endpoint and cloud health integration.

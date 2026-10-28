@@ -50,9 +50,9 @@ try {
     }
     docker compose version | Out-Null
     if ($LASTEXITCODE -ne 0) { throw 'Docker Compose is not available. Install/start Docker Desktop.' }
-    docker compose up --build -d
+    docker compose up --build -d --wait --wait-timeout 120
     if ($LASTEXITCODE -ne 0) { throw 'Docker Compose startup failed; run docker compose logs for details.' }
-    Write-Host 'Local research demo containers started.'
+    Write-Host 'Local research demo containers started and reported healthy.'
     Write-Host 'Dashboard: http://localhost:5173'
     Write-Host 'API docs: http://localhost:8000/docs'
     Write-Host 'Run python -m scripts.smoke_demo for read-only API checks if Python is installed.'

@@ -42,3 +42,13 @@ GitHub Actions runs API tests, compilation, an isolated fresh SQLite migration s
 ## Still missing for a real service
 
 True domain-labeled data, calibrated geographic model validation, secure distributed authentication/rate limits, internationalized accessibility review, simulated disasters/chaos testing, consent/retention compliance and independently approved official feed operations.
+
+## Full Docker stack acceptance
+
+CI now additionally executes the **full Docker Compose stack** using real PostgreSQL/PostGIS, FastAPI, Nginx and the compiled React bundle. A new read-only acceptance CLI checks the compiled frontend HTML, working API reverse-proxy, readiness, intentionally disconnected official alerts, synthetic Scenario Lab, empty isolated DB, stale-input refusal and SPA fallback.
+
+```bash
+python scripts/smoke_compose.py --base http://127.0.0.1:5173
+```
+
+See [end-to-end verification details](END_TO_END_VERIFICATION.md). This test does not authenticate an IMD or CWC account and does not prove operational hazard-prediction accuracy.

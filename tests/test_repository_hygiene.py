@@ -19,7 +19,7 @@ def test_windows_setup_never_prints_credential_or_clears_db_volume():
     stop = (ROOT / "scripts/stop-local.ps1").read_text("utf-8")
     assert "RandomNumberGenerator" in start
     assert "POSTGRES_PASSWORD" in start
-    assert "docker compose up --build -d" in start
+    assert "docker compose up --build -d --wait --wait-timeout 120" in start
     assert "Write-Host $password" not in start
     assert "docker compose down" in stop
     assert "docker compose down -v\n" not in stop
