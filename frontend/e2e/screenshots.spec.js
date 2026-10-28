@@ -25,7 +25,8 @@ test('capture reproducible demo screenshots with visible synthetic warnings', as
   await page.screenshot({ path: resolve(folder, '03-disconnected-official-sources.png'), fullPage: true });
 
   await page.setViewportSize({ width: 390, height: 844 });
-  await navigation.getByRole('button', { name: 'Dashboard' }).click();
+  await page.getByRole('button', { name: 'Open menu' }).click();
+  await navigation.getByRole('button', { name: 'Overview' }).click();
   await expect(page.getByText('NOT LIVE', { exact: true })).toBeVisible();
   await page.screenshot({ path: resolve(folder, '04-mobile-dashboard.png'), fullPage: true });
 });
