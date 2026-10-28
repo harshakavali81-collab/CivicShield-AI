@@ -32,4 +32,7 @@ class AssistantQuestion(StrictModel):
 
 class IncidentReview(StrictModel):
     status: Literal["verified", "dismissed", "needs_info"]
+    # Optional for backward-compatible API use; dashboard always supplies it.
+    # Conflicts are rejected instead of silently overwriting another reviewer.
+    expected_status: Literal["pending", "verified", "dismissed", "needs_info"] | None = None
     reviewer_note: str = Field(default="", max_length=500)

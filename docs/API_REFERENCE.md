@@ -66,3 +66,9 @@ python -m scripts.smoke_demo --url http://localhost:8000
 ```
 
 This command tests health/readiness, source disconnection, the synthetic-weather label, stale experimental input and curated source retrieval. It never posts an incident or calls official live government APIs.
+
+## Optimistic human review consistency
+
+`PATCH /api/v1/incidents/{id}/review` optionally accepts `expected_status` alongside `status` and `reviewer_note`, using the exact value the reviewer originally loaded (pending, needs_info, dismissed or verified). The React reviewer screen supplies it automatically. When a report was updated by another reviewer, the endpoint rejects stale requests with HTTP **409 Conflict** and asks the user to reload. The report status update and audit event are part of the same database transaction; no audit event should be committed for an unsuccessful optimistic update. Older clients may omit `expected_status`, but are advised to supply it.
+
+This prevents silent status overwrites; it does **not** prove a report, reviewer, or emergency is authentic and does not provide multi-organization workflow approval.

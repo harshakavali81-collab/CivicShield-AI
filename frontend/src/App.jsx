@@ -213,9 +213,9 @@ function ResponderReview() {
     try {const data=await api('/api/v1/incidents/audit',{headers:requestHeaders()});setAudit(data.events || []);}
     catch(err){setError(err.message);}
   }
-  async function review(id,status) {setError('');setMessage('');
-    try {await api('/api/v1/incidents/'+encodeURIComponent(id)+'/review',{method:'PATCH',headers:requestHeaders(),body:JSON.stringify({status,reviewer_note:'Reviewed in demonstration dashboard'})});setMessage('Report updated by reviewer.');await load();}
-    catch(err){setError(err.message);}
+  async function review(id,status,expectedStatus) {setError('');setMessage('');
+    try {await api('/api/v1/incidents/'+encodeURIComponent(id)+'/review',{method:'PATCH',headers:requestHeaders(),body:JSON.stringify({status,expected_status:expectedStatus,reviewer_note:'Reviewed in demonstration dashboard'})});setMessage('Report updated by reviewer.');await load();}
+    catch(err){setError(err.message);setReports([]);}
   }
   return <>
     <div className="page-heading"><div><div className="eyebrow">AUTHORIZED HUMAN DECISION</div><h1>Responder review queue</h1><p>A protected demonstration queue. Automated suggestions never trigger official action.</p></div></div>
@@ -236,7 +236,7 @@ function ResponderReview() {
         <div className="report-top"><b>{report.title}</b><span className="subtle-pill">{report.status}</span></div>
         <p>{report.description}</p><small>{report.city} · {categories[report.category] || report.category} · Priority suggestion: {report.priority_hint}</small>
         {report.duplicate_of && <small>Possible duplicate: {report.duplicate_of}</small>}
-        <div className="actions">{['verified','dismissed','needs_info'].map(status=><button className="secondary small" key={status} onClick={()=>review(report.id,status)}>{status.replace('_',' ')}</button>)}</div>
+        <div className="actions">{['verified','dismissed','needs_info'].map(status=><button className="secondary small" key={status} onClick={()=>review(report.id,status,report.status)}>{status.replace('_',' ')}</button>)}</div>
       </div>)}</div>}
     </Card>
     <Card title="Geographic report filtering" subtitle="Restricted geographic radius search — unverified reports, not rescue routes" icon={MapPinned}>

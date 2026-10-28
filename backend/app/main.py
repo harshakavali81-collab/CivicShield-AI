@@ -6,7 +6,7 @@ import hmac
 import os
 from fastapi import Depends, FastAPI, Header, HTTPException, Query, Request
 from fastapi.middleware.cors import CORSMiddleware
-from sqlalchemy import func, select, text
+from sqlalchemy import func, select, text, update
 from sqlalchemy.orm import Session
 from backend.app.config import responder_key, submissions_enabled
 from backend.app.db import Base, Incident, ReviewAudit, engine, get_db
@@ -259,11 +259,28 @@ def review_report(incident_id: str, request: IncidentReview, db: Session = Depen
     if not report:
         raise HTTPException(status_code=404, detail="Report not found")
     previous = report.status
-    report.status = request.status
-    report.reviewer_note = redact_contact_info(request.reviewer_note)
+    if request.expected_status is not None and previous != request.expected_status:
+        raise HTTPException(
+            status_code=409,
+            detail="Report status changed since it was loaded; reload the review queue before trying again",
+        )
+    note = redact_contact_info(request.reviewer_note)
+    # Guard the write against two reviewers simultaneously reading the same
+    # prior status. The audit event and status update commit together.
+    result = db.execute(
+        update(Incident)
+        .where(Incident.id == incident_id, Incident.status == previous)
+        .values(status=request.status, reviewer_note=note)
+    )
+    if result.rowcount != 1:
+        db.rollback()
+        raise HTTPException(
+            status_code=409,
+            detail="Concurrent review detected; reload the review queue before trying again",
+        )
     db.add(ReviewAudit(
-        incident_id=incident_id, actor_ref=actor_reference(reviewer), previous_status=previous, new_status=request.status,
-        reviewer_note=report.reviewer_note,
+        incident_id=incident_id, actor_ref=actor_reference(reviewer), previous_status=previous,
+        new_status=request.status, reviewer_note=note,
     ))
     db.commit()
     db.refresh(report)
