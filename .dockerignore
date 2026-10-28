@@ -1,0 +1,21 @@
+# Keep private files, source-control history and bulky local outputs out of Docker context.
+.git/
+.github/
+.venv/
+venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+.coverage
+.env
+.env.*
+!.env.example
+*.db
+*.sqlite*
+backups/
+data/
+artifacts/
+frontend/
+site/
+tests/
+*.log

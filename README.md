@@ -96,6 +96,16 @@ For the interview-ready walkthrough, see the [Case study](docs/CASE_STUDY.md), [
 - **Developer quality:** FastAPI, SQLAlchemy (SQLite local / PostgreSQL for Docker), Alembic initial migration, controlled backups/purge, tests, Docker Compose, CI, architecture diagrams, docs, local experiment graph generator.
 - **Safety:** no invented government alerts, no personal phone collection, no public disclosure of exact incident coordinates or narratives, reviewer audit log and optional reporter key. No distributed RBAC/anti-abuse claims.
 
+## Windows one-command setup
+
+Use [Windows quick-start instructions](docs/QUICKSTART_WINDOWS.md). After installing Docker Desktop, clone this repo and run:
+
+```powershell
+.\scripts\start-local.ps1
+```
+
+This prepares a gitignored local environment, generates a random database password only when missing, and launches the demo at `http://localhost:5173`. The separate **Scenario lab** tab is a complete interactive, fictional case study.
+
 ## Quick start
 
 ### API (Python 3.11+)
