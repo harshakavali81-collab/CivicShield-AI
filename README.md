@@ -10,6 +10,29 @@
 
 Existing project visual; diagrams and illustrative graphics are not evidence of a deployed application.
 
+
+> **Visual integrity:** These SVGs are original **concept illustrations and technical diagrams**, not screenshots of a deployed production service. This is **not an official warning** platform; no images claim real hazard predictions, operational coverage, or validated model accuracy.
+
+| Application concept | Architecture and data flow |
+| :---: | :---: |
+| [![Concept dashboard layout](docs/assets/dashboard-concept.svg)](docs/assets/dashboard-concept.svg) | [![System architecture overview](docs/assets/architecture-overview.svg)](docs/assets/architecture-overview.svg) |
+| **[Concept dashboard](docs/assets/dashboard-concept.svg)** · example interface and illustrative data | **[System architecture](docs/assets/architecture-overview.svg)** · trust boundaries and components |
+
+| Human report review | Experimental ML flow |
+| :---: | :---: |
+| [![Incident moderation workflow](docs/assets/incident-workflow.svg)](docs/assets/incident-workflow.svg) | [![Model research evaluation process](docs/assets/ml-evaluation-flow.svg)](docs/assets/ml-evaluation-flow.svg) |
+| **[Incident workflow](docs/assets/incident-workflow.svg)** · review decisions remain human | **[ML evaluation](docs/assets/ml-evaluation-flow.svg)** · no operational accuracy claims |
+
+| Source provenance | Demonstration thresholds |
+| :---: | :---: |
+| [![Official provider status and provenance](docs/assets/source-provenance.svg)](docs/assets/source-provenance.svg) | [![Illustrative rainfall groupings](docs/assets/risk-thresholds.svg)](docs/assets/risk-thresholds.svg) |
+| **[Source attribution](docs/assets/source-provenance.svg)** · disconnected ≠ safe | **[Risk thresholds](docs/assets/risk-thresholds.svg)** · not official warning levels |
+
+[Browse the complete visual gallery](docs/VISUALIZATIONS.md) · [Architecture](docs/ARCHITECTURE.md) · [Actual project tree](docs/PROJECT_TREE.md)
+
+
+The fictional scenario lab supports exploration of demonstration inputs; it is not an official warning or emergency service.
+
 ## Live Link / Demo
 
 Run the local demo using the setup guide below. No public deployment URL has been verified for this documentation update.
