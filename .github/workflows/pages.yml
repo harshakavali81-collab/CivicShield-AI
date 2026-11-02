@@ -19,7 +19,7 @@ jobs:
           python scripts/verify_site.py
           python -m scripts.export_static_demo --check
       - uses: actions/configure-pages@v5
-      - uses: actions/upload-pages-artifact@v3
+      - uses: actions/upload-pages-artifact@v5
         with:
           path: site
       - name: Deploy static site
